@@ -1,0 +1,12 @@
+.navbar {
+  padding: 2%;
+  background-color: rgb(33, 33, 33);
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.icon{
+  padding:4px;
+}
