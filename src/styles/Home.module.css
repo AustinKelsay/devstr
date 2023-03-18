@@ -5,6 +5,12 @@
   align-items: center;
   padding: 6rem;
   min-height: 100vh;
+
+}
+
+.image{
+  height: 600px;
+  width: 600px;
 }
 
 .description {

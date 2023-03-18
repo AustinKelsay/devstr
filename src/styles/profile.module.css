@@ -1,0 +1,75 @@
+.row{
+    display: flex;
+    justify-content:space-between;
+    color: white;
+    background-color: black;
+
+}
+
+.main{
+    padding:10px;
+    display: flex;
+    flex-direction: column;
+    width:70vh;
+}
+.profileCard{
+    display:flex;
+    margin:10px;
+}
+.aside{
+    border-left: 1px solid lightgray;
+}
+
+.qr, .recent{
+ padding:10px;
+ height:50vh;
+ width: 20vw;
+}
+.menu{
+    padding:10px;
+    height:50vh;
+    width: 10vw;
+}
+.qr{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.error{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@media screen and (max-width: 500px){
+    .main{
+        padding:5px;
+        width:100vw;
+    }
+    .contribution{
+        width:100vw;
+        padding:10px;
+
+    }
+    .row{
+        display:block;
+        
+    }
+    .menu{
+        display:none;
+    }
+    .aside{
+        border-left: none;
+    }
+    .qr{
+        display:flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width:100vw;
+    }
+
+}

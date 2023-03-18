@@ -1,0 +1,86 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.calendar-container {
+  width: 40%;
+  margin: 0 auto;
+}
+
+.tooltip {
+  position: absolute;
+  display: none;
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  z-index: 999;
+}
+
+.react-calendar-heatmap .color-scale-1 {
+  fill: #d0f7c3;
+}
+.react-calendar-heatmap .color-scale-2 {
+  fill: #baf5ae;
+}
+.react-calendar-heatmap .color-scale-3 {
+  fill: #a1d99b;
+}
+.react-calendar-heatmap .color-scale-4 {
+  fill: #74c476;
+}
+.react-calendar-heatmap .color-scale-5 {
+  fill: #41ab5d;
+}
+.react-calendar-heatmap .color-scale-6 {
+  fill: #238b45;
+}
+.react-calendar-heatmap .color-scale-7 {
+  fill: #006d2c;
+}
+.react-calendar-heatmap .color-scale-8 {
+  fill: #00441b;
+}
+
+  .test{
+    margin: 50px;
+  }

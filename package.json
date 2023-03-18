@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.17",
+    "@chakra-ui/react": "^2.4.9",
     "@noble/secp256k1": "^1.7.1",
     "@octokit/rest": "^19.0.7",
     "@reduxjs/toolkit": "^1.9.3",
@@ -20,6 +22,7 @@
     "next-auth": "^4.20.1",
     "nostr-tools": "^1.7.4",
     "react": "18.2.0",
+    "react-calendar-heatmap": "^1.9.0",
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5",
     "redux-thunk": "^2.4.2"

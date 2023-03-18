@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import Login from "../components/Onboarding/GithubLogin";
+import hero from "../pages/devstr.png"
 import styles from "@/styles/Home.module.css";
 
 export default function Home() {
@@ -12,9 +12,27 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <Login />
-      </main>
+      <div className={styles.main}>
+        <div className={styles.image}>
+        <Image src={hero}/>
+        </div>
+    </div>
     </>
   );
 }
+
+
+// import Image from "next/image"
+// import styles from "../styles/Home.module.css"
+
+// export default function Home() {
+
+
+//  return (
+//     <div className={styles.main}>
+//         <div className={styles.image}>
+//         <Image src={hero}/>
+//         </div>
+//     </div>
+// )
+//  }

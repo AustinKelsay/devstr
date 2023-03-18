@@ -14,6 +14,8 @@ export const newKind0Event = async (
     content: "",
   };
 
+console.log(event)
+
   event.id = getEventHash(event);
   event.sig = signEvent(event, privateKey);
 
