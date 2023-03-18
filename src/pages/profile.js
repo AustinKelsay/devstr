@@ -1,9 +1,9 @@
 import { Avatar, Text, Flex, Box } from "@chakra-ui/react";
 import ContributionCalendar from "../components/contributionCalendar/ContributionCalendar"
 // import PinnedRepos from "../src/components/pinnedRepos/PinnedRepos";
-// import LanguagesUsed from "../src/components/languagesUsed/LanguagesUsed";
+import LanguagesUsed from "../components/languagesUsed/LanguagesUsed";
 // import QR from "../src/components/QR/QR"
-// import Recent from "../src/components/Recent/Recent"
+import Recent from "../components/Recent/Recent"
 import styles from "../styles/profile.module.css"
 import {useState} from "react"
 
@@ -39,7 +39,7 @@ const Profile = () => {
                     {/* <PinnedRepos /> */}
                 </Box>
                 <Box p="4">
-                    {/* <LanguagesUsed /> */}
+                    <LanguagesUsed />
                 </Box>
             </div>
             <div className={styles.aside}>
@@ -47,7 +47,7 @@ const Profile = () => {
                     {/* <QR /> */}
                 </div>
                 <div className={styles.recent}>
-                    {/* <Recent /> */}
+                    <Recent />
                 </div>
             </div>
         </div>

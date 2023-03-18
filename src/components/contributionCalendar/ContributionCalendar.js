@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
-import styles from "./app.module.css";
+import styles from "./chart.module.css";
 
 const ContributionCalendar = () => {
   const [contributions, setContributions] = useState([]);
@@ -107,9 +107,9 @@ const ContributionCalendar = () => {
             return "color-empty";
           }
           if (value.count > 8) {
-            return "color-scale-8";
+            return "colorScale8"
           } else {
-            return `color-scale-${value.count}`;
+            return `colorScale${value.count}`
           }
         }}
         onMouseOver={(event, value) => {
@@ -120,7 +120,7 @@ const ContributionCalendar = () => {
           }
         }}
       />
-      <div ref={tooltipRef} className="tooltip"></div>
+      <div ref={tooltipRef} className={styles.tooltip}></div>
     </div>
   );
 };
