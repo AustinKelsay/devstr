@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { nip19 } from "nostr-tools";
 import { useSession } from "next-auth/react";
-import { createVerificationGist } from "@/pages/api/auth/createVerificationGist";
+import { createVerificationGist } from "@/utils/createVerificationGist";
 import { generateNostrKeypair } from "@/utils/generateNostrKeypair";
 import { newKind0Event } from "@/utils/newKind0Event";
 import { updateKind0Event } from "@/utils/updateKind0Event";
