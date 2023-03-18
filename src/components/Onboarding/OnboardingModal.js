@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { nip19 } from "nostr-tools";
 import { useSession } from "next-auth/react";
 import { createVerificationGist } from "@/utils/createVerificationGist";
@@ -9,7 +9,16 @@ import { updateKind0Event } from "@/utils/updateKind0Event";
 const OnboardingModal = () => {
   const [step, setStep] = useState(1);
   const [keyPair, setKeyPair] = useState(null);
+  const [npub, setNpub] = useState(null);
   const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (keyPair?.pk) {
+      const npub = nip19.npubEncode(keyPair.pk);
+
+      setNpub(npub);
+    }
+  }, [keyPair]);
 
   const handleSignIn = async () => {
     if (typeof window === "undefined") return;
@@ -23,21 +32,21 @@ const OnboardingModal = () => {
 
     const npub = nip19.npubEncode(pk);
 
-    setKeyPair({ npub, nsec: null });
+    setNpub(npub);
+
+    setKeyPair({ pk, sk: null });
   };
 
   const handleKeyGeneration = async () => {
-    const { npub, nsec } = await generateNostrKeypair();
+    const { pk, sk } = await generateNostrKeypair();
 
-    console.log(npub);
-
-    setKeyPair({ npub, nsec });
+    setKeyPair({ pk, sk });
   };
 
   const handleNewSubmit = async () => {
     const token = session.token.accessToken;
 
-    const gistID = await createVerificationGist(token, keyPair.npub);
+    const gistID = await createVerificationGist(token, npub);
 
     if (!gistID) {
       alert("Could not create gist");
@@ -47,8 +56,8 @@ const OnboardingModal = () => {
     alert("Gist created", gistID);
 
     await newKind0Event(
-      keyPair.npub,
-      keyPair.nsec,
+      keyPair.pk,
+      keyPair.sk,
       session.session.user.name.replace(/\s/g, ""),
       gistID
     );
@@ -118,8 +127,8 @@ const OnboardingModal = () => {
           <input type="text" placeholder="username" />
           {keyPair && (
             <div>
-              <p>NPUB: {keyPair.npub}</p>
-              <p>NSEC: {keyPair.nsec}</p>
+              <p>NPUB: {npub}</p>
+              <p>NSEC: {keyPair.sk}</p>
             </div>
           )}
           <button onClick={() => setStep(1)}>Back</button>
