@@ -5,7 +5,7 @@ import styles from "./recent.module.css";
 const Recent = () => {
   const [events, setEvents] = useState([]);
   const { data: session, status } = useSession();
-  const user = session.token.login
+  const user = session?.token?.login
 
   useEffect(() => {
     const fetchEvents = async () => {

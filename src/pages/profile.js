@@ -7,6 +7,7 @@ import QR from "../components/QR/QR";
 import Recent from "../components/Recent/Recent";
 import { useSession } from "next-auth/react";
 import styles from "../styles/profile.module.css";
+import Login from "../components/Onboarding/GithubLogin"
 
 const Profile = () => {
   const [bio, setBio] = useState("");
@@ -32,11 +33,11 @@ const Profile = () => {
     }
   }, [status, session]);
 
-  let loggedIn = true;
+ 
 
   return (
     <>
-      {loggedIn ? (
+      {status === "authenticated" ? (
         <div className={styles.row}>
           <div className={styles.menu}></div>
           <div className={styles.main}>
@@ -70,7 +71,9 @@ const Profile = () => {
         </div>
       ) : (
         <div className={styles.error}>
-          <h1>Log in to view profile</h1>
+          <div className={styles.login}>
+          <h1>You are not logged in. Login to view your profile</h1>
+          </div>
         </div>
       )}
     </>
