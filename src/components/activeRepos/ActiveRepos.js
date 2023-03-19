@@ -14,7 +14,7 @@ const ActiveRepos = () => {
   useEffect(() => {
     const fetchRepos = async () => {
       const response = await fetch(
-        `https://api.github.com/users/${user}/repos?sort=pushed&per_page=6`
+        `https://api.github.com/users/${user}/repos?sort=pushed`
       );
       const data = await response.json();
       console.log(data);
@@ -54,7 +54,7 @@ const ActiveRepos = () => {
       <div className={styles.eventListContainer}>
         <div className={styles.eventList}>
           {repos.length &&
-            repos.map((repo) => (
+            repos.slice(0, 6).map((repo) => (
               <div key={repo.id} className={styles.event}>
                 <div className={styles.eventType}>{repo.name}</div>
                 <div className={styles.eventPayload}>{repo.description}</div>
