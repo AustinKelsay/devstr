@@ -8,7 +8,6 @@ import Recent from "../components/Recent/Recent";
 import { useSession } from "next-auth/react";
 import styles from "../styles/profile.module.css";
 import Head from "next/head";
-import Login from "../components/Onboarding/GithubLogin";
 
 
 const Profile = () => {
@@ -68,7 +67,10 @@ const Profile = () => {
             <div className={styles.recent}>
               <Recent />
             </div>
+            <div className={styles.recent}>
             <LanguagesUsed />
+            </div>
+
           </div>
         </div>
       ) : (
