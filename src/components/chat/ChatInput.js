@@ -9,15 +9,18 @@ const ChatInput = () => {
   const [publicKey, setPublicKey] = useState(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    async function getPublicKey() {
+      if (typeof window === "undefined") return;
+      // If there is no pubkey in the user state
+      // Then grab it from the window
+      if (!publicKey) {
+        const pk = await window.nostr.getPublicKey();
 
-    // If there is no pubkey in the user state
-    // Then grab it from the window
-    if (!publicKey) {
-      const pk = window.nostr.getPublicKey();
-
-      setPublicKey(pk);
+        setPublicKey(pk);
+      }
     }
+
+    getPublicKey();
   }, []);
 
   const handleChange = (event) => {
@@ -26,6 +29,8 @@ const ChatInput = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    console.log("p", publicKey);
 
     const eventObject = {
       kind: 6847839,
@@ -36,15 +41,18 @@ const ChatInput = () => {
     };
 
     eventObject.id = getEventHash(eventObject);
+
     const signedEvent = await window.nostr.signEvent(eventObject);
+
+    eventObject.sig = signedEvent.sig;
 
     const relay = relayInit("ws://72.177.66.131:4848");
 
     await relay.connect();
 
     try {
-      console.log("signedEvent", signedEvent);
-      await relay.publish(signedEvent);
+      console.log("eventObject", eventObject);
+      await relay.publish(eventObject);
       console.log("Event published successfully");
     } catch (err) {
       console.error(`Failed to publish event: ${err}`);
