@@ -17,6 +17,7 @@ import Link from "next/link";
 import Login from "../Onboarding/GithubLogin";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import devstrIcon from "../../../public/devstr-icon.png"
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -71,6 +72,8 @@ const Navbar = () => {
         </DrawerContent>
       </Drawer>
       <Text className={styles.title} fontSize={"xl"}>
+        <Image src={devstrIcon} width={30}
+      height={30}/>
         Devstr
       </Text>
       <div className={styles.navbarRight}>
