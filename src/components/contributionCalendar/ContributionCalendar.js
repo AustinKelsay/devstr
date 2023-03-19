@@ -64,7 +64,7 @@ const ContributionCalendar = () => {
       const latestDate = new Date(contributions[contributions.length - 1].date);
 
       if (earliestDate > latestDate) {
-        setStartDate(lastYear);
+        setStartDate(latestDate);
         setEndDate(earliestDate);
       } else {
         setStartDate(lastYear);
