@@ -68,6 +68,11 @@ const ChatList = () => {
     }
   }
 
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+  };
+
   const handleClick = (event) => {
     const pageNumber = Number(event.target.id);
     if (!isNaN(pageNumber)) {
@@ -80,7 +85,20 @@ const ChatList = () => {
       <ul className={styles.currentEvents}>
         {currentEvents.map((event) => (
           <li className={styles.event} key={event.id}>
-            {event.content}
+            <div className={styles.eventContent}>
+              <p>{event.content}</p>
+              <span>{formatTimestamp(event.created_at)}</span>
+              <div className={styles.eventHeader}>
+                <span>pubkey: {event.pubkey}</span>
+              </div>
+              <ul className={styles.eventTags}>
+                {event.tags.map((tag) => (
+                  <li style={{ listStyle: "none" }} key={tag[1]}>
+                    [{tag[0]}: {tag[1]}]
+                  </li>
+                ))}
+              </ul>
+            </div>
           </li>
         ))}
       </ul>
