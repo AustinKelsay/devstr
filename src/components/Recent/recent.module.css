@@ -18,6 +18,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
+  overflow: auto;
+  height: 400px;
 }
 
 .eventListContainer {
@@ -41,4 +43,14 @@
   font-family: monospace;
   white-space: pre-wrap;
   color: #ccc;
+}
+
+@media screen and (max-width: 500px) {
+  .eventList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    overflow: auto;
+    height: 300px;
+  }
 }

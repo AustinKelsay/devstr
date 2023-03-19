@@ -29,3 +29,10 @@
 .icon {
   padding: 4px;
 }
+@media screen and (max-width:680px){
+  .title {
+    display:none;
+  }
+
+
+}
