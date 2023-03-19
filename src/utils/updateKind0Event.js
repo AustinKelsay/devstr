@@ -15,6 +15,8 @@ export const updateKind0Event = async (githubUsername, gistId) => {
   // Sign the event using Alby
   const signedEvent = await window.nostr.signEvent(event);
 
+  console.log("signedEvent", signedEvent);
+
   // Fetch the list of user relays
   //   const relaysResponse = await axios.get(
   //     `https://www.nostrstuff.com/api/users/${userNpub}/relays`
@@ -36,6 +38,7 @@ export const updateKind0Event = async (githubUsername, gistId) => {
     return relay.connect().then(() => {
       const pub = relay.publish(signedEvent);
       pub.on("ok", (e) => {
+        window.location.replace("/profile");
         console.log(`${relayUrl} has accepted our event`);
       });
       pub.on("failed", (reason) => {
@@ -47,7 +50,4 @@ export const updateKind0Event = async (githubUsername, gistId) => {
 
   // Wait for all the relay publish promises to resolve
   await Promise.all(relayPromises);
-
-  // Return the event ID
-  return signedEvent.id;
 };

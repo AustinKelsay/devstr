@@ -8,6 +8,7 @@ import { newKind0Event } from "@/utils/newKind0Event";
 import { updateKind0Event } from "@/utils/updateKind0Event";
 import { useDispatch } from "react-redux";
 import { setPubkey } from "@/redux/userReducer/userReducer";
+import { useRouter } from "next/router";
 import styles from "./onboarding.module.css";
 
 const OnboardingModal = () => {
@@ -16,6 +17,7 @@ const OnboardingModal = () => {
   const [npub, setNpub] = useState(null);
   const { data: session, status } = useSession();
   const dispatch = useDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     if (keyPair?.pk) {
@@ -65,7 +67,7 @@ const OnboardingModal = () => {
     await newKind0Event(
       keyPair.pk,
       keyPair.sk,
-      session.session.user.name.replace(/\s/g, ""),
+      session.token.login.replace(/\s/g, ""),
       gistID
     );
   };
@@ -73,7 +75,7 @@ const OnboardingModal = () => {
   const handleUpdateSubmit = async () => {
     const token = session.token.accessToken;
 
-    const gistID = await createVerificationGist(token, keyPair.npub);
+    const gistID = await createVerificationGist(token, npub);
 
     if (!gistID) {
       alert("Could not create gist");
@@ -130,6 +132,14 @@ const OnboardingModal = () => {
           <Button
             bg="purple.600"
             disabled={!keyPair || !npub}
+            _disabled={{
+              bg: "gray.400",
+              cursor: "not-allowed",
+              color: "gray.700",
+              _hover: { bg: "gray.400" },
+              _focus: { boxShadow: "none" },
+              _active: { bg: "gray.400" },
+            }}
             onClick={() => setStep("confirm-connect")}
           >
             Next
@@ -163,7 +173,7 @@ const OnboardingModal = () => {
         <div className={styles.modalContent}>
           <h2>Step 3: Confirm your information</h2>
           <p>NPUB: {npub}</p>
-          <p>GitHub username: {session.session.user.name.replace(/\s/g, "")}</p>
+          <p>GitHub username: {session.token.login.replace(/\s/g, "")}</p>
           <p>
             If you confirm and press submit below we will post a verification
             gist on your behalf which will link this nostr public key to your

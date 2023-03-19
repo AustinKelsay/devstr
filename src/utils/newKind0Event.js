@@ -14,8 +14,6 @@ export const newKind0Event = async (
     content: "",
   };
 
-console.log(event)
-
   event.id = getEventHash(event);
   event.sig = signEvent(event, privateKey);
 
@@ -28,11 +26,9 @@ console.log(event)
   pub.on("ok", (e) => {
     console.log("e", e);
     console.log(`${relay.url} has accepted our event`);
+    window.location.replace("/profile");
   });
   pub.on("failed", (reason) => {
     console.log(`failed to publish to ${relay.url}: ${reason}`);
   });
-
-  // Return the event ID
-  return event.id;
 };

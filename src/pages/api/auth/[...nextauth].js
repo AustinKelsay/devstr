@@ -27,11 +27,9 @@ export default NextAuth({
     async session(session) {
       return session;
     },
-    // async redirect(url, baseUrl) {
-    //   if (url === "/") {
-    //     return Promise.resolve("/onboarding");
-    //   }
-    // },
+    async redirect(url, baseUrl) {
+      return Promise.resolve("/onboarding");
+    },
   },
   jwt: {
     secret: process.env.JWT_SIGNING_PRIVATE_KEY,
