@@ -6,7 +6,7 @@ const Chat = () => {
     <>
       {/* <ChatLayout /> */}
       <ChatList />
-      {/* <ChatInput /> */}
+      <ChatInput />
     </>
   );
 };

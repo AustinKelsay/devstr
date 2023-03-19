@@ -27,6 +27,7 @@ export const updateKind0Event = async (githubUsername, gistId, userNpub) => {
     "wss://nostr-pub.wellorder.net",
     "wss://nostr.oxtr.dev",
     "wss://nostr.pleb.network",
+    "wss://nostr.mutinywallet.com",
   ];
 
   // Publish the signed event to each of the user's relays

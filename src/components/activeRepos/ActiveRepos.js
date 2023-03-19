@@ -48,13 +48,7 @@ const ActiveRepos = () => {
         <div className={styles.eventList}>
           {repos.length &&
             repos.map((repo) => (
-              <a
-                key={repo.id}
-                href={repo.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.event}
-              >
+              <div key={repo.id} className={styles.event}>
                 <div className={styles.eventType}>{repo.name}</div>
                 <div className={styles.eventPayload}>{repo.description}</div>
                 <div className={styles.details}>
@@ -68,6 +62,15 @@ const ActiveRepos = () => {
                 </div>
                 <div className={styles.buttonContainer}>
                   <Button
+                    as="a"
+                    href={repo.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    bg={"purple.600"}
+                  >
+                    visit
+                  </Button>
+                  <Button
                     onClick={() => {
                       if (repo) handleBroadcast({ repository: repo });
                     }}
@@ -76,7 +79,7 @@ const ActiveRepos = () => {
                     broadcast
                   </Button>
                 </div>
-              </a>
+              </div>
             ))}
         </div>
       </div>

@@ -6,21 +6,23 @@ const ChatList = () => {
   const [events, setEvents] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [eventsPerPage, setEventsPerPage] = useState(10);
+  const relay = relayInit("wss://relay.damus.io");
+  const sub = relay.sub([
+    {
+      kinds: [1],
+      tags: [["#devstr"]],
+    },
+  ]);
 
   useEffect(() => {
-    const relay = relayInit("ws://72.177.66.131:4848");
     relay.connect();
-
-    // Filter for any events with the #devstr tag
-    const sub = relay.sub([
-      {
-        kinds: [1],
-        // tags: [["#devstr"]],
-      },
-    ]);
 
     sub.on("event", (event) => {
       setEvents((prevState) => [...prevState, event]);
+    });
+
+    relay.on("error", (err) => {
+      console.error(`Relay err: ${err}`);
     });
 
     return () => {

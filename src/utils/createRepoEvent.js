@@ -7,6 +7,7 @@ import {
   validateEvent,
   relayInit,
 } from "nostr-tools";
+import { useSelector } from "react-redux";
 
 export const createRepoEvent = async ({ pubkey, repo }) => {
   const eventObject = {
@@ -14,13 +15,15 @@ export const createRepoEvent = async ({ pubkey, repo }) => {
     pubkey: pubkey,
     created_at: Math.floor(Date.now() / 1000),
     tags: [["#devstr"]],
-    // stringify content
-
     content: JSON.stringify({
       repo: repo,
       type: "repo",
     }),
   };
+
+  const relays = useSelector((state) => state.nostr);
+
+  console.log("eventObject", relays);
 
   console.log("eventObject", eventObject);
 
@@ -29,15 +32,19 @@ export const createRepoEvent = async ({ pubkey, repo }) => {
 
   eventObject.sig = signedEvent.sig;
 
-  const relay = relayInit("wss://relay.plebstr.com");
+  for (let i = 0; i < relays.length; i++) {
+    const relay = relayInit(relays[i]);
+    await relay.connect();
 
-  await relay.connect();
+    try {
+      console.log(`Publishing event to relay ${relays[i]}`);
+      await relay.publish(eventObject);
+      console.log("Event published successfully");
+    } catch (err) {
+      console.error(`Failed to publish event to relay ${relays[i]}: ${err}`);
+    }
 
-  try {
-    console.log("eventObject", eventObject);
-    await relay.publish(eventObject);
-    console.log("Event published successfully");
-  } catch (err) {
-    console.error(`Failed to publish event: ${err}`);
+    relay.close();
   }
+  return;
 };
