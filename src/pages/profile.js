@@ -67,7 +67,10 @@ const Profile = () => {
             <div className={styles.recent}>
               <Recent />
             </div>
+            <div className={styles.recent}>
             <LanguagesUsed />
+            </div>
+
           </div>
         </div>
       ) : (
