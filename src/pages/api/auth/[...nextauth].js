@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
+import { redirect } from "next/dist/server/api-utils";
 
 export default NextAuth({
   providers: [
@@ -23,6 +24,11 @@ export default NextAuth({
     async session(session) {
       return session;
     },
+    // async redirect(url, baseUrl) {
+    //   if (url === "/") {
+    //     return Promise.resolve("/onboarding");
+    //   }
+    // },
   },
   jwt: {
     secret: process.env.JWT_SIGNING_PRIVATE_KEY,

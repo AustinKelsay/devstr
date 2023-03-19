@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { Button } from "@chakra-ui/react";
 import { nip19 } from "nostr-tools";
 import { useSession } from "next-auth/react";
 import { createVerificationGist } from "@/utils/createVerificationGist";
 import { generateNostrKeypair } from "@/utils/generateNostrKeypair";
 import { newKind0Event } from "@/utils/newKind0Event";
 import { updateKind0Event } from "@/utils/updateKind0Event";
+import styles from "./onboarding.module.css";
 
 const OnboardingModal = () => {
   const [step, setStep] = useState(1);
@@ -92,37 +94,45 @@ const OnboardingModal = () => {
   }
 
   return (
-    <div className="modal">
+    <div className={styles.modal}>
       {step === 1 && (
-        <div className="modal-content">
+        <div className={styles.modalContent}>
           <h2>Step 1: Do you have a nostr account?</h2>
-          <button onClick={() => setStep("login")}>Yes</button>
-          <button
+          <Button bg="purple.600" onClick={() => setStep("login")}>
+            Yes
+          </Button>
+          <Button
+            bg="purple.600"
             onClick={async () => {
               await handleKeyGeneration();
               setStep("create");
             }}
           >
             No
-          </button>
+          </Button>
         </div>
       )}
       {step === "login" && (
-        <div className="modal-content">
+        <div className={styles.modalContent}>
           <h2>Step 2: Login with nostr</h2>
-          <button onClick={handleSignIn}>Login with Alby / Nos2x</button>
-          <button onClick={() => setStep(1)}>Back</button>
+          <Button bg="purple.600" onClick={handleSignIn}>
+            Login with Alby / Nos2x
+          </Button>
+          <Button bg="purple.600" onClick={() => setStep(1)}>
+            Back
+          </Button>
 
-          <button
-            disabled={!keyPair?.npub}
+          <Button
+            bg="purple.600"
+            disabled={!keyPair || !npub}
             onClick={() => setStep("confirm-connect")}
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
       {step === "create" && (
-        <div className="modal-content">
+        <div className={styles.modalContent}>
           <h2>Step 2: Choose your username</h2>
           <input type="text" placeholder="username" />
           {keyPair && (
@@ -131,42 +141,53 @@ const OnboardingModal = () => {
               <p>NSEC: {keyPair.sk}</p>
             </div>
           )}
-          <button onClick={() => setStep(1)}>Back</button>
-          <button
+          <Button bg="purple.600" onClick={() => setStep(1)}>
+            Back
+          </Button>
+          <Button
+            bg="purple.600"
             onClick={() => {
               setStep("confirm-new");
             }}
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
       {step === "confirm-connect" && (
-        <div className="modal-content">
+        <div className={styles.modalContent}>
           <h2>Step 3: Confirm your information</h2>
-          <p>NPUB: {keyPair.npub}</p>
+          <p>NPUB: {npub}</p>
           <p>GitHub username: {session.session.user.name.replace(/\s/g, "")}</p>
           <p>
             If you confirm and press submit below we will post a verification
             gist on your behalf which will link this nostr public key to your
             Github profile
           </p>
-          <button onClick={() => setStep(1)}>Back</button>
-          <button onClick={handleUpdateSubmit}>Submit</button>
+          <Button bg="purple.600" onClick={() => setStep(1)}>
+            Back
+          </Button>
+          <Button bg="purple.600" onClick={handleUpdateSubmit}>
+            Submit
+          </Button>
         </div>
       )}
       {step === "confirm-new" && (
-        <div className="modal-content">
+        <div className={styles.modalContent}>
           <h2>Step 3: Confirm your information</h2>
-          <p>NPUB: {keyPair.npub}</p>
+          <p>NPUB: {npub}</p>
           <p>GitHub username: {session.session.user.name.replace(/\s/g, "")}</p>
           <p>
             If you confirm and press submit below we will post a verification
             gist on your behalf which will link this newly created nostr public
             key to your Github profile
           </p>
-          <button onClick={() => setStep(1)}>Back</button>
-          <button onClick={handleNewSubmit}>Submit</button>
+          <Button bg="purple.600" onClick={() => setStep(1)}>
+            Back
+          </Button>
+          <Button bg="purple.600" onClick={handleNewSubmit}>
+            Submit
+          </Button>
         </div>
       )}
     </div>

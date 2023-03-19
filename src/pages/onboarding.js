@@ -1,23 +1,18 @@
 import { useState } from "react";
+import { Button, Box } from "@chakra-ui/react";
 import OnboardingModal from "../../src/components/Onboarding/OnboardingModal";
 
-const MyPage = () => {
-  const [showModal, setShowModal] = useState(false);
-
-  const handleShowModal = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
+const Onboarding = () => {
   return (
-    <div>
-      <button onClick={handleShowModal}>Start Onboarding</button>
-      {showModal && <OnboardingModal handleClose={handleCloseModal} />}
-    </div>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+    >
+      <OnboardingModal />
+    </Box>
   );
 };
 
-export default MyPage;
+export default Onboarding;
