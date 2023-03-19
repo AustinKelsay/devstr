@@ -22,6 +22,7 @@ const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: session, status } = useSession();
   const router = useRouter();
+  const user = session?.token?.login 
 
   console.log("session", session);
 
@@ -96,7 +97,7 @@ const Navbar = () => {
               alt="profile-banner"
             />
             <Heading ml={2} size="sm">
-              {session.session.user.name.replace(/\s/g, "")}
+              {session.token.login}
             </Heading>
           </Card>
         )}
