@@ -19,12 +19,12 @@
   border-left: 1px solid lightgray;
 }
 
-.qr,
-.recent {
+.qr, .recent{
   padding: 10px;
   height: 50vh;
   width: 25vw;
 }
+
 .menu {
   padding: 10px;
   height: 50vh;
@@ -68,5 +68,13 @@
     justify-content: center;
     align-items: center;
     width: 100vw;
+  }
+  .recent {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    margin-top: 10px;;
   }
 }
