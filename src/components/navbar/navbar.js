@@ -23,6 +23,8 @@ const Navbar = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  console.log("session", session);
+
   const handleProfileClick = () => {
     router.push("/profile");
   };

@@ -7,21 +7,18 @@ import {
   validateEvent,
   relayInit,
 } from "nostr-tools";
-import { useSelector } from "react-redux";
 
-export const createRepoEvent = async ({ pubkey, repo }) => {
+export const createRepoEvent = async ({ pubkey, repo, relays }) => {
   const eventObject = {
     kind: 1,
     pubkey: pubkey,
     created_at: Math.floor(Date.now() / 1000),
-    tags: [["#devstr"]],
+    tags: [["t", "devstr"]],
     content: JSON.stringify({
       repo: repo,
       type: "repo",
     }),
   };
-
-  const relays = useSelector((state) => state.nostr);
 
   console.log("eventObject", relays);
 

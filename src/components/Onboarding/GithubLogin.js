@@ -8,6 +8,7 @@ const Login = () => {
   };
 
   const handleSignOut = () => {
+    console.log("signing out");
     signOut();
   };
 

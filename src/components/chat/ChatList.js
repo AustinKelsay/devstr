@@ -6,29 +6,38 @@ const ChatList = () => {
   const [events, setEvents] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [eventsPerPage, setEventsPerPage] = useState(10);
-  const relay = relayInit("wss://relay.damus.io");
+  const relay = relayInit("wss://relay.snort.social");
   const sub = relay.sub([
     {
       kinds: [1],
-      tags: [["#devstr"]],
+      tags: [["#t", "devstr"]],
     },
   ]);
 
+  const checkAndReconnect = () => {
+    if (relay.readyState === WebSocket.OPEN) {
+      return;
+    } else {
+      relay.connect();
+
+      sub.on("event", (event) => {
+        console.log("event", event);
+        setEvents((prevState) => [...prevState, event]);
+      });
+
+      relay.on("error", (err) => {
+        console.error(`Relay err: ${err}`);
+      });
+
+      return () => {
+        sub.unsub();
+        relay.close();
+      };
+    }
+  };
+
   useEffect(() => {
-    relay.connect();
-
-    sub.on("event", (event) => {
-      setEvents((prevState) => [...prevState, event]);
-    });
-
-    relay.on("error", (err) => {
-      console.error(`Relay err: ${err}`);
-    });
-
-    return () => {
-      sub.unsub();
-      relay.close();
-    };
+    checkAndReconnect();
   }, []);
 
   const indexOfLastEvent = currentPage * eventsPerPage;

@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@chakra-ui/react";
 import { createRepoEvent } from "@/utils/createRepoEvent";
+import { useSelector } from "react-redux";
 import styles from "./repos.module.css";
 
 const ActiveRepos = () => {
   const [repos, setRepos] = useState([]);
+  const relays = useSelector((state) => state.nostr.relays);
 
   useEffect(() => {
     const fetchRepos = async () => {
@@ -36,7 +38,7 @@ const ActiveRepos = () => {
       return;
     }
 
-    const event = createRepoEvent({ pubkey, repo });
+    const event = createRepoEvent({ pubkey, repo, relays });
 
     console.log("event in handleBroadcast", event);
   };
