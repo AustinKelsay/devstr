@@ -22,9 +22,6 @@ const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: session, status } = useSession();
   const router = useRouter();
-  const user = session?.token?.login 
-
-  console.log("session", session);
 
   const handleProfileClick = () => {
     router.push("/profile");

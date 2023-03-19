@@ -6,11 +6,10 @@ const ChatList = () => {
   const [events, setEvents] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [eventsPerPage, setEventsPerPage] = useState(10);
-  const relay = relayInit("wss://relay.snort.social");
+  const relay = relayInit("wss://relay.snort.social/");
   const sub = relay.sub([
     {
-      kinds: [1],
-      tags: [["#t", "devstr"]],
+      kinds: [6847839],
     },
   ]);
 

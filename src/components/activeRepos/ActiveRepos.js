@@ -3,13 +3,13 @@ import { Button } from "@chakra-ui/react";
 import { createRepoEvent } from "@/utils/createRepoEvent";
 import { useSelector } from "react-redux";
 import styles from "./repos.module.css";
-import { useSession } from "next-auth/react"
+import { useSession } from "next-auth/react";
 
 const ActiveRepos = () => {
   const [repos, setRepos] = useState([]);
   const relays = useSelector((state) => state.nostr.relays);
   const { data: session, status } = useSession();
-  const user = session?.token?.login
+  const user = session?.token?.login;
 
   useEffect(() => {
     const fetchRepos = async () => {
@@ -36,6 +36,8 @@ const ActiveRepos = () => {
     };
 
     const pubkey = await window.nostr.getPublicKey();
+
+    console.log("pubkey in handleBroadcast", pubkey);
 
     if (!pubkey) {
       return;

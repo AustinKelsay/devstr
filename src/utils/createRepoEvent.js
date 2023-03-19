@@ -9,8 +9,9 @@ import {
 } from "nostr-tools";
 
 export const createRepoEvent = async ({ pubkey, repo, relays }) => {
+  console.log("createRepoEvent", pubkey);
   const eventObject = {
-    kind: 1,
+    kind: 6847839,
     pubkey: pubkey,
     created_at: Math.floor(Date.now() / 1000),
     tags: [["t", "devstr"]],

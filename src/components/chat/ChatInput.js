@@ -24,10 +24,10 @@ const ChatInput = () => {
     const publicKey = await getPublicKey(privateKey);
 
     const eventObject = {
-      kind: 1,
+      kind: 6847839,
       pubkey: publicKey,
       created_at: Math.floor(Date.now() / 1000),
-      tags: [["#devstr"]],
+      tags: [["t", "#devstr"]],
       content,
     };
 
