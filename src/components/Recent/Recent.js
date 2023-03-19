@@ -5,12 +5,13 @@ import styles from "./recent.module.css";
 const Recent = () => {
   const [events, setEvents] = useState([]);
   const { data: session, status } = useSession();
+  const user = session.token.login
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await fetch(
-          "https://api.github.com/users/AustinKelsay/events",
+          `https://api.github.com/users/${user}/events`,
           {
             headers: {
               Authorization: `token ${session.token.accessToken}`,

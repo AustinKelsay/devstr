@@ -14,14 +14,12 @@ const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
 
   const { data: session, status } = useSession();
+  const user = session?.token?.login
 
   useEffect(() => {
     async function fetchGitHubData() {
       const response = await fetch(
-        `https://api.github.com/users/${session.session.user.name.replace(
-          " ",
-          ""
-        )}`
+        `https://api.github.com/users/${user}`
       );
       const data = await response.json();
       setUsername(data.login);

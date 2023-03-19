@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
 import styles from "./chart.module.css";
+import { useSession } from "next-auth/react";
 
 const ContributionCalendar = () => {
   const [contributions, setContributions] = useState([]);
@@ -10,6 +11,8 @@ const ContributionCalendar = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const tooltipRef = useRef(null);
+  const { data: session, status } = useSession();
+  const user = session?.token?.login
 
   const today = new Date();
   const lastYear = new Date(
@@ -26,7 +29,7 @@ const ContributionCalendar = () => {
       let page = 1;
       do {
         result = await axios.get(
-          `https://api.github.com/users/AustinKelsay/events?per_page=100&since=${lastYear}&page=${page}`
+          `https://api.github.com/users/${user}/events?per_page=100&since=${lastYear}&page=${page}`
         );
         allResults.push(...result.data);
         page++;
@@ -61,10 +64,10 @@ const ContributionCalendar = () => {
       const latestDate = new Date(contributions[contributions.length - 1].date);
 
       if (earliestDate > latestDate) {
-        setStartDate(latestDate);
+        setStartDate(lastYear);
         setEndDate(earliestDate);
       } else {
-        setStartDate(earliestDate);
+        setStartDate(lastYear);
         setEndDate(latestDate);
       }
 

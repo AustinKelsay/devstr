@@ -3,15 +3,18 @@ import { Button } from "@chakra-ui/react";
 import { createRepoEvent } from "@/utils/createRepoEvent";
 import { useSelector } from "react-redux";
 import styles from "./repos.module.css";
+import { useSession } from "next-auth/react"
 
 const ActiveRepos = () => {
   const [repos, setRepos] = useState([]);
   const relays = useSelector((state) => state.nostr.relays);
+  const { data: session, status } = useSession();
+  const user = session.token.login
 
   useEffect(() => {
     const fetchRepos = async () => {
       const response = await fetch(
-        "https://api.github.com/users/austinkelsay/repos?sort=pushed&per_page=6"
+        `https://api.github.com/users/${user}/repos?sort=pushed&per_page=6`
       );
       const data = await response.json();
       console.log(data);

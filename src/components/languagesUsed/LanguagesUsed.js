@@ -1,12 +1,15 @@
 import styles from "./languages.module.css";
 import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { useSession } from "next-auth/react";
+
 
 function LanguagesUsed() {
   const [languages, setLanguages] = useState([]);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
-    const username = "AustinKelsay"; // Replace with the GitHub username you want to fetch
+    const username = session?.token?.login // Replace with the GitHub username you want to fetch
     const url = `https://api.github.com/users/${username}/repos`;
 
     fetch(url)
