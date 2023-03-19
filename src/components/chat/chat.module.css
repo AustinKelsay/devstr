@@ -24,17 +24,16 @@
   align-self: flex-end;
 }
 
-/* .message.sent {
-    background-color: #007aff;
-    color: white;
-    align-self: flex-end;
-  }
-  
-  .message.received {
-    background-color: #f2f2f2;
-    color: black;
-    align-self: flex-start;
-  }  */
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+.loading {
+  font-size: 24px;
+}
 
 .form {
   display: flex;
