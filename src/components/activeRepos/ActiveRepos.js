@@ -9,7 +9,7 @@ const ActiveRepos = () => {
   const [repos, setRepos] = useState([]);
   const relays = useSelector((state) => state.nostr.relays);
   const { data: session, status } = useSession();
-  const user = session.token.login
+  const user = session?.token?.login
 
   useEffect(() => {
     const fetchRepos = async () => {
