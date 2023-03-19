@@ -17,12 +17,14 @@
 }
 .aside {
   border-left: 1px solid lightgray;
+  width: 30vw;
 }
 
-.qr, .recent{
+.qr,
+.recent {
   padding: 10px;
   height: 50vh;
-  width: 25vw;
+  /* width: 25vw; */
 }
 
 .menu {
@@ -44,7 +46,7 @@
   align-items: center;
   background-color: black;
 }
-.login{
+.login {
   color: white;
   border: 1px solid white;
   padding: 10px;
@@ -52,7 +54,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items:center;
+  align-items: center;
 }
 
 @media screen and (max-width: 500px) {
@@ -86,6 +88,6 @@
     justify-content: center;
     align-items: center;
     width: 100vw;
-    margin-top: 10px;;
+    margin-top: 10px;
   }
 }
