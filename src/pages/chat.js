@@ -1,13 +1,14 @@
-import ChatLayout from "../components/chat/ChatLayout"
+import ChatInput from "@/components/chat/ChatInput";
+import ChatList from "@/components/chat/ChatList";
 
 const Chat = () => {
-
-    return (
-        <>
-        <ChatLayout />
-        </>
-
-    )
-}
+  return (
+    <>
+      {/* <ChatLayout /> */}
+      <ChatList />
+      {/* <ChatInput /> */}
+    </>
+  );
+};
 
 export default Chat;

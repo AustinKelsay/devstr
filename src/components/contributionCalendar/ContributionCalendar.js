@@ -107,9 +107,9 @@ const ContributionCalendar = () => {
             return "color-empty";
           }
           if (value.count > 8) {
-            return "colorScale8"
+            return "colorScale8";
           } else {
-            return `colorScale${value.count}`
+            return `colorScale${value.count}`;
           }
         }}
         onMouseOver={(event, value) => {

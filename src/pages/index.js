@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import hero from "../pages/devstr.png"
+import hero from "../pages/devstr.png";
 import styles from "@/styles/Home.module.css";
 
 export default function Home() {
@@ -14,19 +14,17 @@ export default function Home() {
       </Head>
       <div className={styles.main}>
         <div className={styles.image}>
-        <Image src={hero}/>
+          <Image alt="hero" src={hero} />
         </div>
-    </div>
+      </div>
     </>
   );
 }
-
 
 // import Image from "next/image"
 // import styles from "../styles/Home.module.css"
 
 // export default function Home() {
-
 
 //  return (
 //     <div className={styles.main}>
