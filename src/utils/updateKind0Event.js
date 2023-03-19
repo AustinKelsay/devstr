@@ -1,6 +1,6 @@
 import { getEventHash, relayInit } from "nostr-tools";
 
-export const updateKind0Event = async (githubUsername, gistId, userNpub) => {
+export const updateKind0Event = async (githubUsername, gistId) => {
   const event = {
     kind: 0,
     created_at: Math.floor(Date.now() / 1000),

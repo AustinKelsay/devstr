@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@chakra-ui/react";
-import {
-  generatePrivateKey,
-  getPublicKey,
-  signEvent,
-  getEventHash,
-  validateEvent,
-  relayInit,
-} from "nostr-tools";
+import { getEventHash, relayInit } from "nostr-tools";
+import { useSelector } from "react-redux";
 import styles from "./chat.module.css";
 
 const ChatInput = () => {
   const [content, setContent] = useState("");
+  const [publicKey, setPublicKey] = useState(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // If there is no pubkey in the user state
+    // Then grab it from the window
+    if (!publicKey) {
+      const pk = window.nostr.getPublicKey();
+
+      setPublicKey(pk);
+    }
+  }, []);
 
   const handleChange = (event) => {
     setContent(event.target.value);
@@ -19,9 +26,6 @@ const ChatInput = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const privateKey = await generatePrivateKey();
-    const publicKey = await getPublicKey(privateKey);
 
     const eventObject = {
       kind: 6847839,
@@ -32,15 +36,15 @@ const ChatInput = () => {
     };
 
     eventObject.id = getEventHash(eventObject);
-    eventObject.sig = signEvent(eventObject, privateKey);
+    const signedEvent = await window.nostr.signEvent(eventObject);
 
     const relay = relayInit("ws://72.177.66.131:4848");
 
     await relay.connect();
 
     try {
-      console.log("eventObject", eventObject);
-      await relay.publish(eventObject);
+      console.log("signedEvent", signedEvent);
+      await relay.publish(signedEvent);
       console.log("Event published successfully");
     } catch (err) {
       console.error(`Failed to publish event: ${err}`);

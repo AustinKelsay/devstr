@@ -6,6 +6,8 @@ import { createVerificationGist } from "@/utils/createVerificationGist";
 import { generateNostrKeypair } from "@/utils/generateNostrKeypair";
 import { newKind0Event } from "@/utils/newKind0Event";
 import { updateKind0Event } from "@/utils/updateKind0Event";
+import { useDispatch } from "react-redux";
+import { setPubkey } from "@/redux/userReducer/userReducer";
 import styles from "./onboarding.module.css";
 
 const OnboardingModal = () => {
@@ -13,6 +15,7 @@ const OnboardingModal = () => {
   const [keyPair, setKeyPair] = useState(null);
   const [npub, setNpub] = useState(null);
   const { data: session, status } = useSession();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (keyPair?.pk) {
@@ -31,6 +34,8 @@ const OnboardingModal = () => {
     }
 
     const pk = await window.nostr.getPublicKey();
+
+    dispatch(setPubkey(pk));
 
     const npub = nip19.npubEncode(pk);
 
