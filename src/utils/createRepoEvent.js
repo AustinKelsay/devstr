@@ -36,6 +36,7 @@ export const createRepoEvent = async ({ pubkey, repo, relays }) => {
 
     try {
       console.log(`Publishing event to relay ${relays[i]}`);
+      console.log("eventObject", eventObject);
       await relay.publish(eventObject);
       console.log("Event published successfully");
     } catch (err) {
