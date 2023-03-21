@@ -1,13 +1,25 @@
-.qr {
+.profileCard {
     margin: 20px;
+    display: flex;
+    flex-direction: row;
     padding: 40px;
     background-color: #111;
     color: white;
     border-radius: 30px;
     transition: all 0.3s ease-in-out;
+    max-height: 200px;
   }
-
-.qr:hover {
+  
+  .profileCard:hover {
     transform: scale(1.05);
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .cardText {
+    margin-left: 40px;
+  }
+  
+  .name {
+    font-size: x-large;
+    font-weight: bold;
   }

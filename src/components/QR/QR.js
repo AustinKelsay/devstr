@@ -1,10 +1,11 @@
 import { useState } from "react";
 import QRCode from "react-qr-code";
-import styles from "./qr.module.css";
+import styles from "../QR/qr.module.css"
 
 const QR = ({ value }) => {
   return (
     // Can be anything instead of `maxWidth` that limits the width.
+    <div className={styles.qr}>
     <div
       style={{
         height: "auto",
@@ -25,6 +26,7 @@ const QR = ({ value }) => {
         value={value}
         viewBox={`0 0 256 256`}
       />
+    </div>
     </div>
   );
 };

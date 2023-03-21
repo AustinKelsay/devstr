@@ -2,7 +2,7 @@
   padding: 1%;
   padding-left: 2%;
   padding-right: 2%;
-  background-color: #212121;
+  background-color: #111;
   color: white;
   width: 100%;
   display: flex;
@@ -19,23 +19,22 @@
 }
 
 .title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   font-size: 1.5rem;
   font-weight: bold;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
 }
 
 .icon {
   padding: 4px;
+  fill: white;
 }
+
 @media screen and (max-width:680px){
   .title {
-    display:none;
-  }
-
-
+    display: none;
+}
 }

@@ -106,6 +106,19 @@ a {
   }
 }
 
+.contributionChart {
+  margin: 20px;
+  padding: 40px;
+  background-color: #111;
+  border-radius: 30px;
+  transition: all 0.3s ease-in-out;
+  color: #41ab5d;
+}
+.contributionChart:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}
+
 .react-calendar-heatmap .colorScale1 {
   fill: #d0f7c3;
   }
