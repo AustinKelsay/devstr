@@ -1,91 +1,29 @@
-.row {
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  grid-gap: 5rem;
+  padding: 20px;
+}
+
+
+.left, .center {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  color: white;
-  background-color: black;
 }
 
-.main {
-  padding: 10px;
+
+.right {
   display: flex;
   flex-direction: column;
-  width: 70vh;
-}
-.profileCard {
-  display: flex;
-  margin: 10px;
-}
-.aside {
-  border-left: 1px solid lightgray;
-  width: 30vw;
 }
 
-.qr,
-.recent {
-  padding: 10px;
-}
 
-.menu {
-  padding: 10px;
-  height: 50vh;
-  width: 10vw;
-}
-.qr {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-.error {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: black;
-}
-.login {
-  color: white;
-  border: 1px solid white;
-  padding: 10px;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
 
-@media screen and (max-width: 500px) {
-  .main {
-    padding: 5px;
-    width: 100vw;
-  }
-  .contribution {
-    width: 100vw;
+@media screen and (max-width:680px) {
+  .gridContainer {
+    display: flex;
+    flex-direction: column;
     padding: 10px;
-  }
-  .row {
-    display: block;
-  }
-  .menu {
-    display: none;
-  }
-  .aside {
-    border-left: none;
-  }
-  .qr {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-  }
-  .recent {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    margin-top: 10px;
   }
 }

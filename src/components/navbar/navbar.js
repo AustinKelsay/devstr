@@ -1,16 +1,4 @@
-import {
-  Card,
-  Heading,
-  Drawer,
-  DrawerBody,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  Button,
-  Text,
-  IconButton,
-} from "@chakra-ui/react";
-import { useDisclosure } from "@chakra-ui/react";
+import { Button, Menu, MenuList, MenuButton, MenuItem, IconButton, Card, Heading } from "@chakra-ui/react";
 import Image from "next/image";
 import styles from "./styles.module.css";
 import Link from "next/link";
@@ -20,7 +8,7 @@ import { useSession } from "next-auth/react";
 import devstrIcon from "../../../public/devstr-icon.png"
 
 const Navbar = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -30,52 +18,29 @@ const Navbar = () => {
 
   return (
     <div className={styles.navbar}>
-      <IconButton
-        colorScheme="whiteAlpha"
-        aria-label="open drawer"
-        onClick={onOpen}
-        color={"whiteAlpha.100"}
-        bg="purple.600"
-        hover="background: purple.500"
-      >
-        <svg
+      <Menu>
+        <MenuButton
+          as={IconButton}
+          aria-label='Options'
+          variant='outline'
+        ><svg
           className={styles.icon}
           viewBox="0 0 100 80"
           width="40"
           height="40"
         >
-          <rect width="100" height="20" rx="10"></rect>
-          <rect y="30" width="100" height="20" rx="10"></rect>
-          <rect y="60" width="100" height="20" rx="10"></rect>
-        </svg>
-      </IconButton>
-      <Drawer
-        placement="left"
-        onClose={onClose}
-        isOpen={isOpen}
-        className="drawer-header"
-      >
-        <DrawerOverlay />
-        <DrawerContent bg="gray.900" color="gray.50">
-          <DrawerHeader borderBottomWidth="1px">Menu</DrawerHeader>
-          <DrawerBody>
-            <p>
-              <Link href="/">Home</Link>
-            </p>
-            <p>
-              <Link href="/profile">Profile</Link>
-            </p>
-            <p>
-              <Link href="/chat">Chat</Link>
-            </p>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
-      <Text className={styles.title} fontSize={"xl"}>
-        <Image src={devstrIcon} width={30}
-      height={30}/>
-        Devstr
-      </Text>
+            <rect width="100" height="20" rx="10"></rect>
+            <rect y="30" width="100" height="20" rx="10"></rect>
+            <rect y="60" width="100" height="20" rx="10"></rect>
+          </svg></MenuButton>
+        <MenuList bg="gray.50" >
+          <MenuItem color="black"><Link href="/">Home</Link></MenuItem>
+          <MenuItem color="black"><Link href="/profile">Profile</Link></MenuItem>
+          <MenuItem color="black"><Link href="/chat">Chat</Link></MenuItem>
+        </MenuList>
+      </Menu>
+      <h1 className={styles.title} fontSize={"xl"}><Image src={devstrIcon} width={30}
+      height={30}/>devstr</h1>
       <div className={styles.navbarRight}>
         {status === "authenticated" && (
           <Card

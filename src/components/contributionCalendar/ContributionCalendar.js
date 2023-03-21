@@ -2,8 +2,8 @@ import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
-import styles from "./chart.module.css";
 import { useSession } from "next-auth/react";
+import { Spinner } from '@chakra-ui/react'
 
 const ContributionCalendar = () => {
   const [contributions, setContributions] = useState([]);
@@ -18,6 +18,11 @@ const ContributionCalendar = () => {
   const lastYear = new Date(
     today.getFullYear() - 1,
     today.getMonth(),
+    today.getDate()
+  ).toISOString();
+  const sixMonths = new Date(
+    today.getFullYear(),
+    today.getMonth() - 6,
     today.getDate()
   ).toISOString();
 
@@ -64,7 +69,7 @@ const ContributionCalendar = () => {
       const latestDate = new Date(contributions[contributions.length - 1].date);
 
       if (earliestDate > latestDate) {
-        setStartDate(latestDate);
+        setStartDate(sixMonths);
         setEndDate(earliestDate);
       } else {
         setStartDate(lastYear);
@@ -98,9 +103,9 @@ const ContributionCalendar = () => {
   };
 
   return loading ? (
-    <p>Loading...</p>
+    <Spinner color='gray.50' />
   ) : (
-    <div className={styles.test}>
+    <div className="contributionChart">
       <CalendarHeatmap
         startDate={startDate}
         endDate={endDate}
@@ -123,7 +128,7 @@ const ContributionCalendar = () => {
           }
         }}
       />
-      <div ref={tooltipRef} className={styles.tooltip}></div>
+        <div ref={tooltipRef} className="tooltip"></div>
     </div>
   );
 };

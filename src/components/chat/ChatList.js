@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { relayInit } from "nostr-tools";
 import styles from "./chat.module.css";
+import { Spinner } from '@chakra-ui/react'
 
 const ChatList = () => {
   const [events, setEvents] = useState([]);
@@ -59,7 +60,7 @@ const ChatList = () => {
       {isLoading ? (
         <div className={styles.error}>
           <div className={styles.loading}>
-            <p>Loading...</p>
+          <Spinner color='purple.500' />
           </div>
         </div>
       ) : (

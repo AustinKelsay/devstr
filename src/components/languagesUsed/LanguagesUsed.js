@@ -1,15 +1,16 @@
 import styles from "./languages.module.css";
 import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { useSession } from "next-auth/react";
+import { Spinner } from '@chakra-ui/react'
+
 
 
 function LanguagesUsed() {
   const [languages, setLanguages] = useState([]);
-  const { data: session, status } = useSession();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const username = session?.token?.login // Replace with the GitHub username you want to fetch
+    const username = "medranomiler"// Replace with the GitHub username you want to fetch
     const url = `https://api.github.com/users/${username}/repos`;
 
     fetch(url)
@@ -31,13 +32,16 @@ function LanguagesUsed() {
           .map(([language, count]) => ({ language, count }));
 
         setLanguages(topLanguages);
+        setLoading(false);
       })
       .catch((error) => console.error(error));
   }, []);
 
-  return (
+  return loading ? (
+    <Spinner color='gray.50' />
+  ) :(
     <div className={styles.container}>
-      <h1>Most Used Programming Languages</h1>
+      <h1 className={styles.h1}>Most Used Programming Languages</h1>
       <div className={styles.chartContainer}>
         <ResponsiveContainer width="100%" height={400}>
           <PieChart>

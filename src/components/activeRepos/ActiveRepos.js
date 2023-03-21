@@ -4,9 +4,11 @@ import { createRepoEvent } from "@/utils/createRepoEvent";
 import { useSelector } from "react-redux";
 import styles from "./repos.module.css";
 import { useSession } from "next-auth/react";
+import { Spinner } from '@chakra-ui/react'
 
 const ActiveRepos = () => {
   const [repos, setRepos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const relays = useSelector((state) => state.nostr.relays);
   const { data: session, status } = useSession();
   const user = session?.token?.login;
@@ -19,6 +21,7 @@ const ActiveRepos = () => {
       const data = await response.json();
       console.log(data);
       setRepos(data);
+      setLoading(false)
     };
     fetchRepos();
   }, []);
@@ -48,10 +51,9 @@ const ActiveRepos = () => {
     console.log("event in handleBroadcast", event);
   };
 
-  return (
+  return loading ? (<Spinner color='gray.50' />):(
     <div className={styles.container}>
       <h1 className={styles.header}>Recent Repositories</h1>
-      <div className={styles.eventListContainer}>
         <div className={styles.eventList}>
           {repos.length &&
             repos.slice(0, 6).map((repo) => (
@@ -90,7 +92,6 @@ const ActiveRepos = () => {
             ))}
         </div>
       </div>
-    </div>
   );
 };
 
