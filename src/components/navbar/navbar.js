@@ -5,7 +5,7 @@ import Link from "next/link";
 import Login from "../Onboarding/GithubLogin";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import devstrIcon from "../../../public/devstr-icon.png"
+import devstrIcon from "../../../public/devstr-icon-2.png"
 
 const Navbar = () => {
 
@@ -39,8 +39,7 @@ const Navbar = () => {
           <MenuItem color="black"><Link href="/chat">Chat</Link></MenuItem>
         </MenuList>
       </Menu>
-      <h1 className={styles.title} fontSize={"xl"}><Image src={devstrIcon} width={30}
-      height={30}/>devstr</h1>
+      <h1 className={styles.title} fontSize={"xl"}><Image src={devstrIcon}/>devstr</h1>
       <div className={styles.navbarRight}>
         {status === "authenticated" && (
           <Card

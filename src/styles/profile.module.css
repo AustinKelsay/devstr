@@ -18,12 +18,9 @@
   flex-direction: column;
 }
 
-
-
 @media screen and (max-width:680px) {
   .gridContainer {
-    display: flex;
-    flex-direction: column;
+    display: block;
     padding: 10px;
   }
 }
