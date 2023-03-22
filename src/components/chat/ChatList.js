@@ -12,6 +12,7 @@ const ChatList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const relay = relayInit("wss://relay.snort.social/");
   const sub = relay.sub([{ kinds: [6847839] }]);
+  const [avatarUrls, setAvatarUrls] = useState({});
 
   const checkAndReconnect = () => {
     if (relay.readyState === WebSocket.OPEN) {
@@ -38,6 +39,27 @@ const ChatList = () => {
   useEffect(() => {
     checkAndReconnect();
   }, []);
+
+  
+
+useEffect(() => {
+  const fetchAvatar = async (name) => {
+    const url = `https://api.github.com/users/${name}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    setAvatarUrls((prevState) => ({
+      ...prevState,
+      [name]: data.avatar_url,
+    }));
+  };
+
+  repoEvents.forEach((event) => {
+    const { repoOwner } = event;
+    if (!avatarUrls[repoOwner]) {
+      fetchAvatar(repoOwner);
+    }
+  });
+}, [repoEvents, avatarUrls]);
 
   useEffect(() => {
     if (events.length > 0) {
@@ -77,13 +99,16 @@ const ChatList = () => {
     return date.format('MMM Do YYYY, h:mm:ss a');
   };
 
-  async function fetchGitHubData(name) {
-    const url = `https://api.github.com/users/${name}`
-    const response = await fetch(url);
-    const data = await response.json();
-    const avatar = data.avatar_url
-    return console.log(avatar)
-  }
+  // const fetchGitHubData = async (name) =>  {
+  //   const url = `https://api.github.com/users/${name}`
+  //   const response = await fetch(url);
+  //   const data = await response.json();
+  //   return data.avatar_url
+
+  // }
+
+
+  
 
 
   return (
@@ -105,7 +130,8 @@ const ChatList = () => {
             <div className={styles.event} key={event.id}>
               <span>{formatTimestamp(event.created_at)}</span>
               <div className={styles.eventContent}>
-              <Avatar size="2xl" src={fetchGitHubData(event.repoOwner)} />
+              <Avatar size="2xl" src={avatarUrls[event.repoOwner]} />
+
                 <span className={styles.span}>Type: {event.type}</span>
                 <div className={styles.eventHeader}>
                   <span>Repo Name: {event.repoName}</span>
