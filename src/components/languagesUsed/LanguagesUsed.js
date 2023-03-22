@@ -2,15 +2,17 @@ import styles from "./languages.module.css";
 import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { Spinner } from '@chakra-ui/react'
-
+import { useSession } from "next-auth/react";
 
 
 function LanguagesUsed() {
+  const { data: session, status } = useSession();
+  const user = session?.token?.login
   const [languages, setLanguages] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const username = "medranomiler"// Replace with the GitHub username you want to fetch
+    const username = user
     const url = `https://api.github.com/users/${username}/repos`;
 
     fetch(url)

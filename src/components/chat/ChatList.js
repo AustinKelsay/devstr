@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { relayInit } from "nostr-tools";
 import styles from "./chat.module.css";
-import { Spinner } from '@chakra-ui/react'
+import { Spinner, Avatar} from '@chakra-ui/react'
+import moment from 'moment';
+
 
 const ChatList = () => {
   const [events, setEvents] = useState([]);
+  const [repoEvents, setRepoEvents] = useState([])
   const [isLoading, setIsLoading] = useState(true);
   const relay = relayInit("wss://relay.snort.social/");
   const sub = relay.sub([{ kinds: [6847839] }]);
@@ -16,7 +20,7 @@ const ChatList = () => {
       relay.connect();
 
       sub.on("event", (event) => {
-        console.log("event", event);
+        // console.log("event", event);
         setEvents((prevState) => [...prevState, event]);
       });
 
@@ -37,7 +41,28 @@ const ChatList = () => {
 
   useEffect(() => {
     if (events.length > 0) {
+      const parsedEvents = events.map((event) => {
+        const parsedData = JSON.parse(event.content);
+        const parsedKeys = {
+          pubkey: event.pubkey,
+          createdAt: event.created_at,
+          tag: event.tags[0]
+        }
+        return {
+          id: event.id,
+          repoName: parsedData.repo.name,
+          repoOwner: parsedData.repo.owner,
+          repoUrl: parsedData.repo.url,
+          type: parsedData.type,
+          pubkey: parsedKeys.pubkey,
+          created_at: parsedKeys.createdAt,
+          tag: parsedKeys.tag
+        };
+
+      });
       setIsLoading(false);
+      setRepoEvents(parsedEvents)
+    
     }
   }, [events]);
 
@@ -48,9 +73,18 @@ const ChatList = () => {
   }, []); // only run once when the component mounts
 
   const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp * 1000);
-    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+    const date = moment(timestamp * 1000);
+    return date.format('MMM Do YYYY, h:mm:ss a');
   };
+
+  async function fetchGitHubData(name) {
+    const url = `https://api.github.com/users/${name}`
+    const response = await fetch(url);
+    const data = await response.json();
+    const avatar = data.avatar_url
+    return console.log(avatar)
+  }
+
 
   return (
     <div
@@ -60,30 +94,33 @@ const ChatList = () => {
       {isLoading ? (
         <div className={styles.error}>
           <div className={styles.loading}>
-          <Spinner color='purple.500' />
+            <Spinner color='purple.500' />
           </div>
         </div>
       ) : (
-        <ul className={styles.currentEvents}>
-          {events.map((event) => (
-            <li className={styles.event} key={event.id}>
+        <div className={styles.currentEvents}>
+          {repoEvents.map((event) => (
+
+
+            <div className={styles.event} key={event.id}>
+              <span>{formatTimestamp(event.created_at)}</span>
               <div className={styles.eventContent}>
-                <p>{event.content}</p>
-                <span>{formatTimestamp(event.created_at)}</span>
+              <Avatar size="2xl" src={fetchGitHubData(event.repoOwner)} />
+                <span className={styles.span}>Type: {event.type}</span>
                 <div className={styles.eventHeader}>
-                  <span>pubkey: {event.pubkey}</span>
+                  <span>Repo Name: {event.repoName}</span>
                 </div>
-                <ul className={styles.eventTags}>
-                  {event.tags.map((tag) => (
-                    <li style={{ listStyle: "none" }} key={tag[1]}>
-                      [{tag[0]}: {tag[1]}]
-                    </li>
-                  ))}
-                </ul>
+                <div className={styles.eventTags}>
+                  <p><Link href={event.repoOwner}>Repo Owner: {event.repoOwner}</Link></p>
+                  <p><Link href={event.repoUrl}>URL: {event.repoUrl}</Link></p>
+                  <p>Event ID: {event.id}</p>
+                  <p>Pubkey: {event.pubkey}</p>
+                  <p>Tags: {event.tag}</p>
+                </div>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
