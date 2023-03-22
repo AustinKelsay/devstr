@@ -4,6 +4,7 @@ import { relayInit } from "nostr-tools";
 import styles from "./chat.module.css";
 import { Spinner, Avatar} from '@chakra-ui/react'
 import moment from 'moment';
+import ReadChatEvents from "@/utils/readChatEvents";
 
 
 const ChatList = () => {
@@ -39,8 +40,6 @@ const ChatList = () => {
   useEffect(() => {
     checkAndReconnect();
   }, []);
-
-  
 
 useEffect(() => {
   const fetchAvatar = async (name) => {
@@ -99,18 +98,6 @@ useEffect(() => {
     return date.format('MMM Do YYYY, h:mm:ss a');
   };
 
-  // const fetchGitHubData = async (name) =>  {
-  //   const url = `https://api.github.com/users/${name}`
-  //   const response = await fetch(url);
-  //   const data = await response.json();
-  //   return data.avatar_url
-
-  // }
-
-
-  
-
-
   return (
     <div
       className={styles.chatList}
@@ -125,18 +112,12 @@ useEffect(() => {
       ) : (
         <div className={styles.currentEvents}>
           {repoEvents.map((event) => (
-
-
             <div className={styles.event} key={event.id}>
-              <span>{formatTimestamp(event.created_at)}</span>
+              <span className={styles.createdAt}>{formatTimestamp(event.created_at)}</span>
               <div className={styles.eventContent}>
               <Avatar size="2xl" src={avatarUrls[event.repoOwner]} />
-
-                <span className={styles.span}>Type: {event.type}</span>
-                <div className={styles.eventHeader}>
-                  <span>Repo Name: {event.repoName}</span>
-                </div>
-                <div className={styles.eventTags}>
+                  <div className={styles.eventPayload}>
+                  <p>Repo Name: {event.repoName}</p>
                   <p><Link href={event.repoOwner}>Repo Owner: {event.repoOwner}</Link></p>
                   <p><Link href={event.repoUrl}>URL: {event.repoUrl}</Link></p>
                   <p>Event ID: {event.id}</p>
