@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { relayInit } from "nostr-tools";
 import styles from "./chat.module.css";
-import { Spinner, Avatar} from '@chakra-ui/react'
+import { Card, CardHeader, CardBody, Spinner, Avatar, Heading, Flex, Box, Text } from '@chakra-ui/react'
 import moment from 'moment';
-import ReadChatEvents from "@/utils/readChatEvents";
+// import ReadChatEvents from "@/utils/readChatEvents";
 
 
 const ChatList = () => {
@@ -95,7 +95,7 @@ useEffect(() => {
 
   const formatTimestamp = (timestamp) => {
     const date = moment(timestamp * 1000);
-    return date.format('MMM Do YYYY, h:mm:ss a');
+    return date.format('MMM Do YYYY, h:mm a');
   };
 
   return (
@@ -110,24 +110,52 @@ useEffect(() => {
           </div>
         </div>
       ) : (
+        
+
         <div className={styles.currentEvents}>
           {repoEvents.map((event) => (
-            <div className={styles.event} key={event.id}>
-              <span className={styles.createdAt}>{formatTimestamp(event.created_at)}</span>
-              <div className={styles.eventContent}>
-              <Avatar size="2xl" src={avatarUrls[event.repoOwner]} />
-                  <div className={styles.eventPayload}>
-                  <p>Repo Name: {event.repoName}</p>
-                  <p><Link href={event.repoOwner}>Repo Owner: {event.repoOwner}</Link></p>
-                  <p><Link href={event.repoUrl}>URL: {event.repoUrl}</Link></p>
-                  <p>Event ID: {event.id}</p>
-                  <p>Pubkey: {event.pubkey}</p>
-                  <p>Tags: {event.tag}</p>
-                </div>
-              </div>
-            </div>
+            <div >
+            <Card className={styles.event} key={event.id} my={2} bg="gray.50" boxShadow='dark-lg'
+            maxW='md'>
+            <CardHeader>
+              <Flex spacing='4'>
+                <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
+                  <Avatar name={event.repoOwner} src={avatarUrls[event.repoOwner]} />
+                  <Box>
+                    <Heading size='sm'><Link href={event.repoOwner}>{event.repoOwner}</Link></Heading>
+                    <Text><Link href={event.repoUrl}>{event.repoName}</Link></Text>
+                  </Box>
+                </Flex>
+          <p>{formatTimestamp(event.created_at)}</p>
+              </Flex>
+            </CardHeader>
+            <CardBody>
+              <Text>
+          <br/>
+          <p>Event ID: {event.id}</p>
+          <br/>
+          <p>Pubkey: {event.pubkey}</p>
+              </Text>
+            </CardBody>
+          </Card>
+          </div>
+            // <div className={styles.event} key={event.id}>
+            //   <span className={styles.createdAt}>{formatTimestamp(event.created_at)}</span>
+            //   <div className={styles.eventContent}>
+            //   <Avatar size="2xl" src={avatarUrls[event.repoOwner]} margin-bottom="2"/>
+            //       <div className={styles.eventPayload}>
+            //       <p>Repo Name: {event.repoName}</p>
+            //       <p>Repo Owner: <Link href={event.repoOwner} className={styles.link}>{event.repoOwner}</Link></p>
+            //       <p>URL: <Link href={event.repoUrl} className={styles.link}>{event.repoUrl}</Link></p>
+            //       <p>Event ID: {event.id}</p>
+            //       <p>Pubkey: {event.pubkey}</p>
+            //       {/* <p>Tags: {event.tag}</p> */}
+            //     </div>
+            //   </div>
+            // </div>
           ))}
         </div>
+
       )}
     </div>
   );
