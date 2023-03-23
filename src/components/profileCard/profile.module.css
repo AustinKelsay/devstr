@@ -28,3 +28,21 @@
   .qr{
     width:30px;
   }
+  @media screen and (max-width:390px) {
+    .profileCard {
+      margin: 20px;
+      display: flex;
+      flex-direction: row;
+      padding: 5px;
+      background-color: #242424;
+      color: white;
+      border-radius: 30px;
+      transition: all 0.3s ease-in-out;
+      max-height: 800px;
+    }
+    .name {
+      font-size: large;
+      font-weight: bold;
+    }
+
+  }

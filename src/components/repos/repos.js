@@ -3,12 +3,10 @@ import { Button, Box } from "@chakra-ui/react";
 import styles from "./repos.module.css";
 import { useSession } from "next-auth/react";
 import { Spinner } from "@chakra-ui/react";
-import {
-  setRepos,
-  repoBroadcasted,
-} from "../../redux/githubReducer/githubReducer";
+import {setRepos,repoBroadcasted} from "../../redux/githubReducer/githubReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { getEventHash, relayInit } from "nostr-tools";
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 
 const ActiveRepos = () => {
   const [loading, setLoading] = useState(true);
@@ -124,9 +122,19 @@ const ActiveRepos = () => {
     } catch (err) {
       throw new Error(`Failed to publish event: ${err}`);
     }
-
-    setIsDisabled(false);
+    
+    useEffect(() => {
+      const fetchBranches = async () => {
+        const response = await fetch(
+          `${repo.branches_url}`
+        );
+        const data = await response.json();
+        console.log(data)
+      };
+      fetchBranches();
+    }, [repo?.broadcasted]);
   };
+ 
 
   const handleSeeMore = () => {
     setDisplayCount(displayCount + 10);
@@ -144,6 +152,25 @@ const ActiveRepos = () => {
               key={repo.id}
               className={isDisabled ? styles.disabledEvent : styles.event}
             >
+              {console.log('yo', repo)}
+              {repo?.broadcasted && (
+                <Tabs variant='enclosed'>
+                <TabList>
+                  <Tab>One</Tab>
+                  <Tab>Two</Tab>
+
+                </TabList>
+                <TabPanels>
+                  <TabPanel>
+                    <p>Branches</p>
+                    {}
+                  </TabPanel>
+                  <TabPanel>
+                    <p>Commits</p>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+              )}
               <div className={styles.eventType}>{repo.name}</div>
               {repo?.broadcasted && <h2>Broadcasted</h2>}
               <div className={styles.eventPayload}>{repo.description}</div>

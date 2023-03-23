@@ -2,6 +2,7 @@ import { Spinner, Avatar } from '@chakra-ui/react'
 import { useState, useEffect } from "react";
 import styles from "./profile.module.css"
 import { useSession } from "next-auth/react";
+import Image from "next/image"
 import ShowQrButton from '../showQr/showQrButton';
 
  
@@ -31,7 +32,8 @@ import ShowQrButton from '../showQr/showQrButton';
 
     return loading ? (<Spinner color='gray.50' />):
         (<div class={styles.profileCard}>
-        <Avatar size="2xl" src={avatarUrl} />
+
+          <Avatar size="2xl" src={avatarUrl}/>
           <div className={styles.cardText}>
             <h2 className={styles.name}>{username}</h2>
             <p className={styles.bio}>{bio}</p>
