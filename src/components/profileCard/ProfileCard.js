@@ -33,6 +33,7 @@ import { useSession } from "next-auth/react";
           <div className={styles.cardText}>
             <h2 className={styles.name}>{username}</h2>
             <p className={styles.bio}>{bio}</p>
+            <div className={styles.more}></div>
           </div>
         </div>
     )
