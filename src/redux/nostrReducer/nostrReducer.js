@@ -9,6 +9,7 @@ const initialState = {
     "wss://nostr.oxtr.dev",
     "wss://nostr.pleb.network",
     "wss://nostr.mutinywallet.com",
+    "ws://18.220.89.39:8006",
   ],
 };
 

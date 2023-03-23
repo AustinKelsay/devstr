@@ -11,6 +11,13 @@ import { setPubkey } from "@/redux/userReducer/userReducer";
 import { useRouter } from "next/router";
 import styles from "./onboarding.module.css";
 
+// onboarding:
+// store kind0 in localstorage
+// if kind0 exists, then skip onboarding
+// if kind0 doesn't exist, then show onboarding
+// if the kind0 has the github tag then skip onboarding
+// if the kind0 doesn't have the github tag then continue with onboarding
+
 const OnboardingModal = () => {
   const [step, setStep] = useState(1);
   const [keyPair, setKeyPair] = useState(null);

@@ -1,19 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  pubkey: null,
+  user: {},
 };
 
 export const userSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    setPubkey: (state, action) => {
-      state.pubkey = action.payload;
+    setUser: (state, action) => {
+      state.user = action.payload;
     },
   },
 });
 
-export const { setPubkey } = userSlice.actions;
+export const { setUser } = userSlice.actions;
 
 export default userSlice.reducer;
