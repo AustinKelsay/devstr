@@ -3,7 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
 import { useSession } from "next-auth/react";
-import { Spinner } from '@chakra-ui/react'
+import { Spinner } from "@chakra-ui/react";
+import useSWR from "swr";
 
 const ContributionCalendar = () => {
   const [contributions, setContributions] = useState([]);
@@ -12,76 +13,174 @@ const ContributionCalendar = () => {
   const [endDate, setEndDate] = useState(null);
   const tooltipRef = useRef(null);
   const { data: session, status } = useSession();
-  const user = session?.token?.login
+  const user = session?.token?.login;
+  const accessToken = session?.token?.accessToken;
+
+  const headers = {
+    headers: {
+      Authorization: `token ${accessToken}`,
+    },
+  };
 
   const today = new Date();
-  const lastYear = new Date(
-    today.getFullYear() - 1,
-    today.getMonth(),
-    today.getDate()
-  ).toISOString();
-  const sixMonths = new Date(
+  const sixMonthsAgo = new Date(
     today.getFullYear(),
     today.getMonth() - 6,
-    today.getDate()
+    1
   ).toISOString();
+
+  const fetcher = (url) => axios.get(url, headers).then((res) => res.data);
+
+  const { data: repos } = useSWR(
+    `https://api.github.com/users/${user}/repos?per_page=100`,
+    fetcher,
+    { revalidateOnFocus: false }
+  );
+
+  const fetchCommitsForRepo = async (repoName) => {
+    const { data } = await axios.get(
+      `https://api.github.com/repos/${user}/${repoName}/commits?since=${sixMonthsAgo}&per_page=100`,
+      headers
+    );
+    return data;
+  };
+
+  const fetchCommits = async () => {
+    if (!repos) return [];
+
+    const allResults = [];
+
+    for (const repo of repos) {
+      const commits = await fetchCommitsForRepo(repo.name);
+      allResults.push(...commits);
+    }
+
+    return allResults;
+  };
+
+  const fetchRepoCreationEvents = async () => {
+    if (!repos) return [];
+
+    return repos.filter((repo) => {
+      const repoCreatedAt = new Date(repo.created_at);
+      return repoCreatedAt >= new Date(sixMonthsAgo);
+    });
+  };
+
+  const fetchPullRequestEvents = async (repoName, event) => {
+    const { data } = await axios.get(
+      `https://api.github.com/repos/${user}/${repoName}/pulls?state=all&per_page=100`,
+      headers
+    );
+    return data.filter((pr) => {
+      const eventDate = new Date(
+        event === "open" ? pr.created_at : pr.merged_at
+      );
+      return eventDate >= new Date(sixMonthsAgo);
+    });
+  };
+
+  const fetchPullRequestOpens = async () => {
+    if (!repos) return [];
+
+    const allResults = [];
+
+    for (const repo of repos) {
+      const prs = await fetchPullRequestEvents(repo.name, "open");
+      allResults.push(...prs);
+    }
+
+    return allResults;
+  };
+
+  const fetchPullRequestMerges = async () => {
+    if (!repos) return [];
+
+    const allResults = [];
+
+    for (const repo of repos) {
+      const prs = await fetchPullRequestEvents(repo.name, "merged");
+      allResults.push(...prs.filter((pr) => pr.merged_at));
+    }
+
+    return allResults;
+  };
+
+  const formatEvents = (allResults, eventType) => {
+    const events = allResults.reduce((acc, event) => {
+      const date = new Date(
+        eventType === "commit"
+          ? event.commit.committer.date
+          : eventType === "repo"
+          ? event.created_at
+          : eventType === "open"
+          ? event.created_at
+          : event.merged_at
+      );
+      const key = `${date.getFullYear()}-${
+        date.getMonth() + 1
+      }-${date.getDate()}`;
+
+      if (!acc[key]) {
+        acc[key] = { date: key, count: 0 };
+      }
+
+      acc[key].count += 1;
+
+      return acc;
+    }, {});
+
+    return Object.values(events);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      const allResults = [];
+      if (!repos) return;
 
-      let result = null;
-      let page = 1;
-      do {
-        result = await axios.get(
-          `https://api.github.com/users/${user}/events?per_page=100&since=${lastYear}&page=${page}`
-        );
-        allResults.push(...result.data);
-        page++;
-      } while (
-        result.headers.link &&
-        result.headers.link.includes('rel="next"')
+      const commits = await fetchCommits();
+      const repoCreationEvents = await fetchRepoCreationEvents();
+      const pullRequestOpens = await fetchPullRequestOpens();
+      const pullRequestMerges = await fetchPullRequestMerges();
+
+      const formattedCommits = formatEvents(commits, "commit");
+      const formattedRepoCreationEvents = formatEvents(
+        repoCreationEvents,
+        "repo"
+      );
+      const formattedPullRequestOpens = formatEvents(pullRequestOpens, "open");
+      const formattedPullRequestMerges = formatEvents(
+        pullRequestMerges,
+        "merged"
       );
 
-      console.log(allResults);
+      const allContributions = [
+        ...formattedCommits,
+        ...formattedRepoCreationEvents,
+        ...formattedPullRequestOpens,
+        ...formattedPullRequestMerges,
+      ];
 
-      const commits = allResults
-        .filter((event) => event.type === "PushEvent")
-        .reduce((acc, pushEvent) => {
-          const date = new Date(pushEvent.created_at);
-          pushEvent.payload.commits.forEach((commit) => {
-            const key = `${date.getFullYear()}-${
-              date.getMonth() + 1
-            }-${date.getDate()}`;
+      const contributions = allContributions.reduce((acc, contribution) => {
+        if (!acc[contribution.date]) {
+          acc[contribution.date] = { date: contribution.date, count: 0 };
+        }
+        acc[contribution.date].count += contribution.count;
 
-            if (!acc[key]) {
-              acc[key] = { date: key, count: 0 };
-            }
+        return acc;
+      }, {});
 
-            acc[key].count += 1;
-          });
+      const earliestDate = new Date(Object.values(contributions)[0]?.date);
+      const latestDate = new Date(today); // Use 'today' as the latest date
 
-          return acc;
-        }, {});
+      setStartDate(sixMonthsAgo);
+      setEndDate(latestDate);
 
-      const contributions = Object.values(commits);
-      const earliestDate = new Date(contributions[0].date);
-      const latestDate = new Date(contributions[contributions.length - 1].date);
-
-      if (earliestDate > latestDate) {
-        setStartDate(sixMonths);
-        setEndDate(earliestDate);
-      } else {
-        setStartDate(lastYear);
-        setEndDate(latestDate);
-      }
-
-      setContributions(contributions);
+      setContributions(Object.values(contributions));
       setLoading(false);
     };
 
     fetchData();
-  }, []);
+  }, [repos]);
 
   const handleMouseOver = (event, value) => {
     const tooltip = tooltipRef.current;
@@ -103,7 +202,7 @@ const ContributionCalendar = () => {
   };
 
   return loading ? (
-    <Spinner color='gray.50' />
+    <Spinner color="gray.50" />
   ) : (
     <div className="contributionChart">
       <CalendarHeatmap
@@ -127,8 +226,9 @@ const ContributionCalendar = () => {
             handleMouseLeave(event, {});
           }
         }}
+        onMouseLeave={handleMouseLeave}
       />
-        <div ref={tooltipRef} className="tooltip"></div>
+      <div ref={tooltipRef} className="tooltip"></div>
     </div>
   );
 };

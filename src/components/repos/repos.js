@@ -1,18 +1,24 @@
 import { useState, useEffect } from "react";
 import { Button, Box } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
 import styles from "./repos.module.css";
 import { useSession } from "next-auth/react";
 import { Spinner } from "@chakra-ui/react";
+import {
+  setRepos,
+  repoBroadcasted,
+} from "../../redux/githubReducer/githubReducer";
+import { useDispatch, useSelector } from "react-redux";
 import { getEventHash, relayInit } from "nostr-tools";
 
 const ActiveRepos = () => {
-  const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [displayCount, setDisplayCount] = useState(10);
   const { data: session, status } = useSession();
+  const dispatch = useDispatch();
   const user = session?.token?.login;
-  // const relays = useSelector((state) => state.nostr.relays);
+
+  const repoList = useSelector((state) => state.github.repos);
 
   useEffect(() => {
     const fetchRepos = async () => {
@@ -20,8 +26,7 @@ const ActiveRepos = () => {
         `https://api.github.com/users/${user}/repos?sort=pushed`
       );
       const data = await response.json();
-      console.log(data);
-      setRepos(data);
+      dispatch(setRepos(data));
       setLoading(false);
     };
     fetchRepos();
@@ -112,6 +117,7 @@ const ActiveRepos = () => {
 
     try {
       await relay.publish(repoEvent);
+      dispatch(repoBroadcasted(repoEvent));
       console.log("Event published successfully");
     } catch (err) {
       throw new Error(`Failed to publish event: ${err}`);
@@ -120,14 +126,18 @@ const ActiveRepos = () => {
     setIsDisabled(false);
   };
 
-  return loading ? (
+  const handleSeeMore = () => {
+    setDisplayCount(displayCount + 10);
+  };
+
+  return loading || !repoList.length ? (
     <Spinner color="gray.50" />
   ) : (
     <div className={styles.container}>
-      <h1 className={styles.header}>Recent Repositories</h1>
+      <h1 className={styles.header}>Active Repositories</h1>
       <div className={styles.eventList}>
-        {repos.length &&
-          repos.slice(0, 6).map((repo) => (
+        {repoList.length &&
+          repoList.slice(0, displayCount).map((repo) => (
             <div
               key={repo.id}
               className={isDisabled ? styles.disabledEvent : styles.event}
@@ -166,6 +176,13 @@ const ActiveRepos = () => {
               </div>
             </div>
           ))}
+        {repoList.length > displayCount && (
+          <Box textAlign="center" marginBottom="1rem">
+            <Button onClick={handleSeeMore} bg={"purple.600"}>
+              See More
+            </Button>
+          </Box>
+        )}
       </div>
     </div>
   );
