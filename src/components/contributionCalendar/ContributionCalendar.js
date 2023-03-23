@@ -37,25 +37,23 @@ const ContributionCalendar = () => {
     { revalidateOnFocus: false }
   );
 
+  const fetchPushEvents = async () => {
+    const { data } = await axios.get(
+      `https://api.github.com/users/${user}/events/public?per_page=100`,
+      headers
+    );
+    return data.filter((event) => {
+      const eventDate = new Date(event.created_at);
+      return event.type === "PushEvent" && eventDate >= new Date(sixMonthsAgo);
+    });
+  };
+
   const fetchCommitsForRepo = async (repoName) => {
     const { data } = await axios.get(
       `https://api.github.com/repos/${user}/${repoName}/commits?since=${sixMonthsAgo}&per_page=100`,
       headers
     );
     return data;
-  };
-
-  const fetchCommits = async () => {
-    if (!repos) return [];
-
-    const allResults = [];
-
-    for (const repo of repos) {
-      const commits = await fetchCommitsForRepo(repo.name);
-      allResults.push(...commits);
-    }
-
-    return allResults;
   };
 
   const fetchRepoCreationEvents = async () => {
@@ -115,7 +113,9 @@ const ContributionCalendar = () => {
           ? event.created_at
           : eventType === "open"
           ? event.created_at
-          : event.merged_at
+          : eventType === "merged"
+          ? event.merged_at
+          : event.created_at // For PushEvent
       );
       const key = `${date.getFullYear()}-${
         date.getMonth() + 1
@@ -133,49 +133,82 @@ const ContributionCalendar = () => {
     return Object.values(events);
   };
 
+  const fetchDataAndUpdate = async (fetchFunc, args, eventType) => {
+    try {
+      const data = await fetchFunc(...args);
+      updateContributions(data, eventType);
+    } catch (error) {
+      console.error(`Error fetching ${eventType} data:`, error);
+    }
+  };
+
+  const updateContributions = (newData, eventType) => {
+    const formattedData = formatEvents(newData, eventType);
+
+    setContributions((prevContributions) => {
+      const updatedContributions = { ...prevContributions };
+
+      formattedData.forEach((data) => {
+        if (!updatedContributions[data.date]) {
+          updatedContributions[data.date] = {
+            date: data.date,
+            count: 0,
+          };
+        }
+
+        updatedContributions[data.date].count += data.count;
+      });
+
+      return Object.values(updatedContributions);
+    });
+
+    if (loading) {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (!repos) return;
 
-      const commits = await fetchCommits();
-      const repoCreationEvents = await fetchRepoCreationEvents();
-      const pullRequestOpens = await fetchPullRequestOpens();
-      const pullRequestMerges = await fetchPullRequestMerges();
+      setLoading(true);
 
-      const formattedCommits = formatEvents(commits, "commit");
-      const formattedRepoCreationEvents = formatEvents(
-        repoCreationEvents,
-        "repo"
-      );
-      const formattedPullRequestOpens = formatEvents(pullRequestOpens, "open");
-      const formattedPullRequestMerges = formatEvents(
-        pullRequestMerges,
-        "merged"
-      );
+      // Set startDate and endDate
+      setStartDate(new Date(today.getFullYear(), today.getMonth() - 6, 1));
+      setEndDate(today);
 
-      const allContributions = [
-        ...formattedCommits,
-        ...formattedRepoCreationEvents,
-        ...formattedPullRequestOpens,
-        ...formattedPullRequestMerges,
+      const fetchFuncs = [
+        { func: fetchPushEvents, args: [], eventType: "push" },
+        ...repos.map((repo) => ({
+          func: fetchCommitsForRepo,
+          args: [repo.name],
+          eventType: "commit",
+        })),
+        { func: fetchRepoCreationEvents, args: [], eventType: "repo" },
+        ...repos.map((repo) => ({
+          func: fetchPullRequestEvents,
+          args: [repo.name, "open"],
+          eventType: "open",
+        })),
+        ...repos.map((repo) => ({
+          func: fetchPullRequestEvents,
+          args: [repo.name, "merged"],
+          eventType: "merged",
+        })),
       ];
 
-      const contributions = allContributions.reduce((acc, contribution) => {
-        if (!acc[contribution.date]) {
-          acc[contribution.date] = { date: contribution.date, count: 0 };
+      const fetchPromises = fetchFuncs.map(
+        async ({ func, args, eventType }) => {
+          try {
+            const data = await func(...args);
+            updateContributions(data, eventType);
+          } catch (error) {
+            console.error(`Error fetching ${eventType} data:`, error);
+          }
         }
-        acc[contribution.date].count += contribution.count;
+      );
 
-        return acc;
-      }, {});
-
-      const earliestDate = new Date(Object.values(contributions)[0]?.date);
-      const latestDate = new Date(today); // Use 'today' as the latest date
-
-      setStartDate(sixMonthsAgo);
-      setEndDate(latestDate);
-
-      setContributions(Object.values(contributions));
+      await Promise.allSettled(fetchPromises);
       setLoading(false);
     };
 
@@ -201,9 +234,7 @@ const ContributionCalendar = () => {
     tooltip.style.display = "none";
   };
 
-  return loading ? (
-    <Spinner color="gray.50" />
-  ) : (
+  return (
     <div className="contributionChart">
       <CalendarHeatmap
         startDate={startDate}
@@ -214,9 +245,9 @@ const ContributionCalendar = () => {
             return "color-empty";
           }
           if (value.count > 8) {
-            return "colorScale8";
+            return "colorScale8 cellFadeIn";
           } else {
-            return `colorScale${value.count}`;
+            return `colorScale${value.count} cellFadeIn`;
           }
         }}
         onMouseOver={(event, value) => {

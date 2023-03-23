@@ -15,6 +15,7 @@ export const githubSlice = createSlice({
   initialState,
   reducers: {
     setRepos: (state, action) => {
+      console.log("setRepos", action.payload);
       state.repos = action.payload;
     },
     setBroadcastableCommits: (state, action) => {
@@ -22,7 +23,9 @@ export const githubSlice = createSlice({
     },
     repoBroadcasted: (state, action) => {
       const repo = action.payload;
+      console.log("repoBroadcasted", repo.id);
       const repoIndex = state.repos.findIndex((r) => r.id === repo.id);
+      console.log("repoIndex", state.repos);
       if (repoIndex >= 0) {
         state.repos[repoIndex].broadcasted = true;
       } else {

@@ -18,6 +18,8 @@ const ActiveRepos = () => {
   const dispatch = useDispatch();
   const user = session?.token?.login;
 
+  // Build a hook that fetches repo events from the relay to be able to tell if a repo has been broadcasted
+
   const repoList = useSelector((state) => state.github.repos);
 
   useEffect(() => {
@@ -111,13 +113,13 @@ const ActiveRepos = () => {
 
     repoEvent.sig = signedEvent.sig;
 
-    const relay = relayInit("ws://127.0.0.1:8006");
+    const relay = relayInit("ws://18.220.89.39:8006/");
 
     await relay.connect();
 
     try {
       await relay.publish(repoEvent);
-      dispatch(repoBroadcasted(repoEvent));
+      dispatch(repoBroadcasted(repository));
       console.log("Event published successfully");
     } catch (err) {
       throw new Error(`Failed to publish event: ${err}`);
@@ -143,6 +145,7 @@ const ActiveRepos = () => {
               className={isDisabled ? styles.disabledEvent : styles.event}
             >
               <div className={styles.eventType}>{repo.name}</div>
+              {repo?.broadcasted && <h2>Broadcasted</h2>}
               <div className={styles.eventPayload}>{repo.description}</div>
               <div className={styles.details}>
                 <span className={styles.language}>{repo.language}</span>
@@ -163,16 +166,18 @@ const ActiveRepos = () => {
                 >
                   visit
                 </Button>
-                <Button
-                  onClick={() => {
-                    if (repo) handleBroadcast({ repository: repo });
-                  }}
-                  bg={isDisabled ? "grey.500" : "purple.600"}
-                  disabled={isDisabled}
-                  isLoading={isDisabled}
-                >
-                  broadcast
-                </Button>
+                {!repo?.broadcasted && (
+                  <Button
+                    onClick={() => {
+                      if (repo) handleBroadcast({ repository: repo });
+                    }}
+                    bg={isDisabled ? "grey.500" : "purple.600"}
+                    disabled={isDisabled}
+                    isLoading={isDisabled}
+                  >
+                    broadcast
+                  </Button>
+                )}
               </div>
             </div>
           ))}
