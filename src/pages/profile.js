@@ -10,9 +10,6 @@ import { setUser } from "../redux/userReducer/userReducer";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/profile.module.css";
 import { relayInit } from "nostr-tools";
-import { useState } from "react";
-import { Button } from "@chakra-ui/react";
-import styles from "../styles/profile.module.css";
 
 const Profile = () => {
   const { data: session, status } = useSession();
