@@ -2,6 +2,7 @@ import { Spinner, Avatar } from '@chakra-ui/react'
 import { useState, useEffect } from "react";
 import styles from "./profile.module.css"
 import { useSession } from "next-auth/react";
+import ShowQrButton from '../showQr/showQrButton';
 
  
  function ProfileCard() {
@@ -34,6 +35,7 @@ import { useSession } from "next-auth/react";
           <div className={styles.cardText}>
             <h2 className={styles.name}>{username}</h2>
             <p className={styles.bio}>{bio}</p>
+            <ShowQrButton/>
             <div className={styles.more}></div>
           </div>
         </div>

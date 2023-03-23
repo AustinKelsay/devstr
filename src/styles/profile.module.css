@@ -31,13 +31,19 @@
     padding: 10px;
   }
   .qrButton {
-    display: block;
-    background-color: #242424;
-    text-align: center;
-    margin: 20px;
-    border-radius: 30px;
-    padding:10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #7434db;
+    margin: 5px;
+    border-radius: 50%;
+    padding:5px;
+    width:30px;
+    height: 30px;
     color: white;
+    cursor: pointer;
+
   }
   .qr {
     display: none;
