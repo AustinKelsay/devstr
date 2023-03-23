@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import styles from "./recent.module.css";
+import moment from "moment"
 
 const Recent = () => {
   const [events, setEvents] = useState([]);
@@ -31,13 +32,21 @@ const Recent = () => {
     }
   }, [status]);
 
+  const formatTimestamp = (timestamp) => {
+    const date = moment.utc(timestamp);
+    return date.format('MMMM Do YYYY, h:mm:ss a');
+  };
+  
+  const split = (str) =>{
+    return str.split(/(?=[A-Z])/).join(" ")
+  }
   return (
     <div className={styles.container}>
       <h2 className={styles.header}>Recent GitHub Activity</h2>
         <div className={styles.eventList}>
           {events.map((event) => (
             <div className={styles.card} key={event.id}>
-              <div className={styles.eventHeader}><p>{event.type}</p><p>{event.created_at}</p></div>
+              <div className={styles.eventHeader}><p>{split(event.type)}</p><p>{formatTimestamp(event.created_at)}</p></div>
                   <div className={styles.cardBody}>
                     {event.type === "PushEvent" && (
                       <div>

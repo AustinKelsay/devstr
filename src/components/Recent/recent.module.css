@@ -34,17 +34,19 @@
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
+  color: #8affd4;
 }
 .cardBody {
+  font-family: monospace;
   padding: 10px;
-  color:#222;
-  background-color: white;
+  color:#8affd4;
+  background-color: #222;
   border-radius: 10px;
 }
 
  
 .cardBody a {
-  color: #0070f3;
+  color: #7434db;
   text-decoration: none;
 }
 .container:hover{
