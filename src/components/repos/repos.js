@@ -7,9 +7,10 @@ import {setRepos,repoBroadcasted} from "../../redux/githubReducer/githubReducer"
 import { useDispatch, useSelector } from "react-redux";
 import { getEventHash, relayInit } from "nostr-tools";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
+import { useFetchRepoEvents } from "../../hooks/useFetchRepoEvents";
+
 
 const ActiveRepos = () => {
-  const [loading, setLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(false);
   const [displayCount, setDisplayCount] = useState(10);
   const { data: session, status } = useSession();
@@ -17,6 +18,7 @@ const ActiveRepos = () => {
   const user = session?.token?.login;
 
   // Build a hook that fetches repo events from the relay to be able to tell if a repo has been broadcasted
+  const [events, loading] = useFetchRepoEvents();
 
   const repoList = useSelector((state) => state.github.repos);
 
@@ -27,7 +29,6 @@ const ActiveRepos = () => {
       );
       const data = await response.json();
       dispatch(setRepos(data));
-      setLoading(false);
     };
     fetchRepos();
   }, []);
@@ -194,20 +195,55 @@ const ActiveRepos = () => {
                   visit
                 </Button>
                 {!repo?.broadcasted && (
+
+          repoList.slice(0, displayCount).map((repo) => {
+            const isBroadcasted = events.some(
+              (event) => event.repo.name === repo.name
+            );
+            return (
+              <div
+                key={repo.id}
+                className={isDisabled ? styles.disabledEvent : styles.event}
+              >
+                <div className={styles.eventType}>{repo.name}</div>
+                {isBroadcasted && <h2>Broadcasted</h2>}
+                <div className={styles.eventPayload}>{repo.description}</div>
+                <div className={styles.details}>
+                  <span className={styles.language}>{repo.language}</span>
+                  <span className={styles.stars}>
+                    {repo.stargazers_count} stars
+                  </span>
+                  <span className={styles.updated}>
+                    Updated on {new Date(repo.pushed_at).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className={styles.buttonContainer}>
                   <Button
-                    onClick={() => {
-                      if (repo) handleBroadcast({ repository: repo });
-                    }}
-                    bg={isDisabled ? "grey.500" : "purple.600"}
-                    disabled={isDisabled}
-                    isLoading={isDisabled}
+                    as="a"
+                    href={repo.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    bg={"purple.600"}
                   >
-                    broadcast
+                    visit
                   </Button>
-                )}
+                  {!isBroadcasted && (
+                    <Button
+                      onClick={() => {
+                        if (repo) handleBroadcast({ repository: repo });
+                      }}
+                      bg={isDisabled ? "grey.500" : "purple.600"}
+                      disabled={isDisabled}
+                      isLoading={isDisabled}
+                    >
+                      broadcast
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
+
         {repoList.length > displayCount && (
           <Box textAlign="center" marginBottom="1rem">
             <Button onClick={handleSeeMore} bg={"purple.600"}>

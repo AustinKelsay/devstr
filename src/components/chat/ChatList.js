@@ -33,7 +33,6 @@ const ChatList = () => {
       relay.connect();
 
       sub.on("event", (event) => {
-        // console.log("event", event);
         setEvents((prevState) => [...prevState, event]);
       });
 
@@ -100,7 +99,7 @@ const ChatList = () => {
     setEvents((prevState) =>
       [...prevState].sort((a, b) => b.created_at - a.created_at)
     );
-  }, []); // only run once when the component mounts
+  }, []);
 
   const formatTimestamp = (timestamp) => {
     const date = moment(timestamp * 1000);
