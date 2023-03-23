@@ -82,10 +82,10 @@ const Profile = () => {
           {/* --------------------center of page-------------------- */}
           <div className={styles.center}>
             <ProfileCard />
-            <button className={styles.qrButton} onClick={handleDoubleClick}>
-              {isVisible ? "Hide QR" : "Display QR"}
-            </button>
-            {isVisible ? <QR value={"bitcoinplebdev@stacker.news"} /> : null}
+            <div className={styles.qrButton} onClick={handleDoubleClick}>
+              {isVisible ? "Hide QR" : "Show QR"}
+              {isVisible ? <QR value={"bitcoinplebdev@stacker.news"}/> : null}
+            </div>
             <ContributionCalendar />
             <ActiveRepos />
           </div>

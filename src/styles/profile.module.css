@@ -32,6 +32,12 @@
   }
   .qrButton {
     display: block;
+    background-color: #242424;
+    text-align: center;
+    margin: 20px;
+    border-radius: 30px;
+    padding:10px;
+    color: white;
   }
   .qr {
     display: none;
