@@ -10,14 +10,30 @@ import { setUser } from "../redux/userReducer/userReducer";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/profile.module.css";
 import { relayInit } from "nostr-tools";
+import NostrCard from "../components/nostrCard/nostrCard"
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react'
 
 const Profile = () => {
   const { data: session, status } = useSession();
   const [isVisible, setIsVisible] = useState(false);
+  const [profileCard, setProfileCard] = useState(true)
+  const [qr, setQr] = useState('')
 
-  const handleDoubleClick = () => {
+  const toggleQrDisplay = () => {
     setIsVisible((prev) => !prev);
   };
+  const { isOpen, onOpen, onClose } = useDisclosure(toggleQrDisplay)
+  // const handleProfileChange = () => {
+  //   setProfileCard((prev) => !prev);
+  // };
 
   const user = session?.token?.login;
 
@@ -57,9 +73,11 @@ const Profile = () => {
           displayName: profile.display_name,
           name: profile.name,
           nip05: profile.nip05,
-          picture: profile.picture
+          picture: profile.picture,
+          lnAddress: profile.lud16
         }
-
+        console.log(qr)
+        setQr(parsedProfile.lnAddress)
         dispatch(setUser(profile));
       });
 
@@ -77,22 +95,30 @@ const Profile = () => {
       {status === "authenticated" ? (
         <div className={styles.gridContainer}>
           {/* --------------------left side of page-------------------- */}
-          {/* <div className={styles.left}>
-          </div> */}
           {/* --------------------center of page-------------------- */}
           <div className={styles.center}>
-            <ProfileCard />
-            <button className={styles.qrButton} onClick={handleDoubleClick}>
-              {isVisible ? "Hide QR" : "Display QR"}
-            </button>
-            {isVisible ? <QR value={"bitcoinplebdev@stacker.news"} /> : null}
+            <ProfileCard /> 
+            <div className={styles.qrButton} onClick={onOpen}>
+              {isVisible ? "" : "Show QR"}
+              {/* {isVisible ? <QR value={qr}/> : null} */}
+              <Modal onClose={onClose} isOpen={isOpen} isCentered>
+                <ModalOverlay />
+                <ModalContent bg="#242424">
+                  <ModalHeader textAlign="center" color="white">{qr}</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <QR value={qr} />
+                  </ModalBody>
+                </ModalContent>
+              </Modal>
+            </div>
             <ContributionCalendar />
             <ActiveRepos />
           </div>
           {/* --------------------right side of page-------------------- */}
           <div className={styles.right}>
             <div className={styles.qr}>
-              <QR value={"bitcoinplebdev@stacker.news"} />
+              <QR value={qr} />
             </div>
             <Recent />
             <LanguagesUsed />

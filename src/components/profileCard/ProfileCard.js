@@ -2,6 +2,7 @@ import { Spinner, Avatar } from '@chakra-ui/react'
 import { useState, useEffect } from "react";
 import styles from "./profile.module.css"
 import { useSession } from "next-auth/react";
+
  
  function ProfileCard() {
     const { data: session, status } = useSession();
