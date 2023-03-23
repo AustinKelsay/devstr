@@ -3,13 +3,12 @@ import { Button, Box } from "@chakra-ui/react";
 import styles from "./repos.module.css";
 import { useSession } from "next-auth/react";
 import { Spinner } from "@chakra-ui/react";
-import {
-  setRepos,
-  repoBroadcasted,
-} from "../../redux/githubReducer/githubReducer";
+import {setRepos,repoBroadcasted} from "../../redux/githubReducer/githubReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { getEventHash, relayInit } from "nostr-tools";
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 import { useFetchRepoEvents } from "../../hooks/useFetchRepoEvents";
+
 
 const ActiveRepos = () => {
   const [isDisabled, setIsDisabled] = useState(false);
@@ -124,9 +123,19 @@ const ActiveRepos = () => {
     } catch (err) {
       throw new Error(`Failed to publish event: ${err}`);
     }
-
-    setIsDisabled(false);
+    
+    useEffect(() => {
+      const fetchBranches = async () => {
+        const response = await fetch(
+          `${repo.branches_url}`
+        );
+        const data = await response.json();
+        console.log(data)
+      };
+      fetchBranches();
+    }, [repo?.broadcasted]);
   };
+ 
 
   const handleSeeMore = () => {
     setDisplayCount(displayCount + 10);
@@ -139,6 +148,54 @@ const ActiveRepos = () => {
       <h1 className={styles.header}>Active Repositories</h1>
       <div className={styles.eventList}>
         {repoList.length &&
+          repoList.slice(0, displayCount).map((repo) => (
+            <div
+              key={repo.id}
+              className={isDisabled ? styles.disabledEvent : styles.event}
+            >
+              {console.log('yo', repo)}
+              {repo?.broadcasted && (
+                <Tabs variant='enclosed'>
+                <TabList>
+                  <Tab>One</Tab>
+                  <Tab>Two</Tab>
+
+                </TabList>
+                <TabPanels>
+                  <TabPanel>
+                    <p>Branches</p>
+                    {}
+                  </TabPanel>
+                  <TabPanel>
+                    <p>Commits</p>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+              )}
+              <div className={styles.eventType}>{repo.name}</div>
+              {repo?.broadcasted && <h2>Broadcasted</h2>}
+              <div className={styles.eventPayload}>{repo.description}</div>
+              <div className={styles.details}>
+                <span className={styles.language}>{repo.language}</span>
+                <span className={styles.stars}>
+                  {repo.stargazers_count} stars
+                </span>
+                <span className={styles.updated}>
+                  Updated on {new Date(repo.pushed_at).toLocaleDateString()}
+                </span>
+              </div>
+              <div className={styles.buttonContainer}>
+                <Button
+                  as="a"
+                  href={repo.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  bg={"purple.600"}
+                >
+                  visit
+                </Button>
+                {!repo?.broadcasted && (
+
           repoList.slice(0, displayCount).map((repo) => {
             const isBroadcasted = events.some(
               (event) => event.repo.name === repo.name
