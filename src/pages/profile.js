@@ -52,6 +52,13 @@ const Profile = () => {
         console.log("we got the event we wanted:", event);
 
         const profile = JSON.parse(event.content);
+        const parsedProfile = {
+          about: profile.about,
+          displayName: profile.display_name,
+          name: profile.name,
+          nip05: profile.nip05,
+          picture: profile.picture
+        }
 
         dispatch(setUser(profile));
       });
