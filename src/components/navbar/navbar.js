@@ -33,10 +33,10 @@ const Navbar = () => {
             <rect y="30" width="100" height="20" rx="10"></rect>
             <rect y="60" width="100" height="20" rx="10"></rect>
           </svg></MenuButton>
-        <MenuList bg="gray.50" >
-          <MenuItem color="black"><Link href="/">Home</Link></MenuItem>
-          <MenuItem color="black"><Link href="/profile">Profile</Link></MenuItem>
-          <MenuItem color="black"><Link href="/chat">Chat</Link></MenuItem>
+        <MenuList bg="#242424" borderColor="black">
+          <MenuItem bg="#242424" color="green.400"><Link href="/">Home</Link></MenuItem>
+          <MenuItem bg="#242424" color="green.400"><Link href="/profile">Profile</Link></MenuItem>
+          <MenuItem bg="#242424" color="green.400"><Link href="/chat">Chat</Link></MenuItem>
         </MenuList>
       </Menu>
       <h1 className={styles.title} fontSize={"xl"}><Image src={devstrIcon}/>devstr</h1>
