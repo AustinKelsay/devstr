@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   repos: [],
+  repoEvents: [],
+  userRepoEvents: [],
   broadcastableCommits: [],
 };
 
@@ -17,6 +19,10 @@ export const githubSlice = createSlice({
     setRepos: (state, action) => {
       console.log("setRepos", action.payload);
       state.repos = action.payload;
+    },
+    setRepoEvents: (state, action) => {
+      console.log("setRepoEvents", action.payload);
+      state.repoEvents = action.payload;
     },
     setBroadcastableCommits: (state, action) => {
       state.broadcastableCommits = action.payload;
