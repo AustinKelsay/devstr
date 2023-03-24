@@ -76,11 +76,13 @@ const NostrCard = () =>{
 
 
     return(<div class={styles.profileCard}>
-        <Avatar size="2xl" src={avatarUrl} />
+        <Avatar  src={avatarUrl} 
+        size={{ base: 'xl', md: '2xl' }}/>
           <div className={styles.cardText}>
             <h2 className={styles.name}>{username}</h2>
-            <p className={styles.bio}>{bio}</p>
-            <p>{nip05}</p>
+            <p className={styles.bio}>{bio}
+            <br/>{nip05}</p>
+            
             <div className={styles.more}>   
             <ShowQrButton/>
               </div>

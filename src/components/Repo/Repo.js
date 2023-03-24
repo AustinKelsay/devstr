@@ -1,38 +1,12 @@
-import { useState, useEffect } from "react";
-import { Button, Box } from "@chakra-ui/react";
-import styles from "./repos.module.css";
-import { useSession } from "next-auth/react";
-import { Spinner } from "@chakra-ui/react";
-import {setRepos,repoBroadcasted} from "../../redux/githubReducer/githubReducer";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { Button } from "@chakra-ui/react";
 import { getEventHash, relayInit } from "nostr-tools";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
-import { useFetchRepoEvents } from "../../hooks/useFetchRepoEvents";
-import Repo from "../Repo/Repo"
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react'
+import styles from "../repos/repos.module.css";
 
-
-const ActiveRepos = () => {
+const Repo = ({ repo, isBroadcasted }) => {
   const [isDisabled, setIsDisabled] = useState(false);
-  const [displayCount, setDisplayCount] = useState(10);
-  const { data: session, status } = useSession();
-  const dispatch = useDispatch();
-  const user = session?.token?.login;
-
-  // Build a hook that fetches repo events from the relay to be able to tell if a repo has been broadcasted
-  const [events, loading] = useFetchRepoEvents();
-
-  const repoList = useSelector((state) => state.github.repos);
-
-  useEffect(() => {
-    const fetchRepos = async () => {
-      const response = await fetch(
-        `https://api.github.com/users/${user}/repos?sort=pushed`
-      );
-      const data = await response.json();
-      dispatch(setRepos(data));
-    };
-    fetchRepos();
-  }, []);
+  const [branchInfo, setBranchInfo] = useState('');
 
   const handleBroadcast = async ({ repository }) => {
     setIsDisabled(true);
@@ -119,55 +93,96 @@ const ActiveRepos = () => {
 
     try {
       await relay.publish(repoEvent);
-      dispatch(repoBroadcasted(repository));
       console.log("Event published successfully");
     } catch (err) {
       throw new Error(`Failed to publish event: ${err}`);
     }
-    
-    useEffect(() => {
-      const fetchBranches = async () => {
-        const response = await fetch(
-          `${repo.branches_url}`
-        );
-        const data = await response.json();
-        console.log(data)
-      };
-      fetchBranches();
-    }, [repo?.broadcasted]);
-  };
- 
 
-  const handleSeeMore = () => {
-    setDisplayCount(displayCount + 10);
+    setIsDisabled(false);
+
   };
 
-  return loading || !repoList.length ? (
-    <Spinner color="gray.50" />
-  ) : (
-    <div className={styles.container}>
-      <h1 className={styles.header}>Active Repositories</h1>
-      <div className={styles.eventList}>
-        {repoList.length &&
-          repoList.slice(0, displayCount).map((repo) => {
-            const isBroadcasted = events.some(
-              (event) => event.repo.name === repo.name
-            );
-            return (
-              <Repo key={repo.id} repo={repo} isBroadcasted={isBroadcasted} />
-            );
-          })}
+  function handleBranchChoice(e){
+    if(e.target.value === "Branch 1"){
+        setBranchInfo("This worked")
+    }
+    else if(e.target.value === "Branch 2"){
+        setBranchInfo("This also worked")
+    }
+    else{setBranchInfo("This also also worked")
+    }
+}
 
-        {repoList.length > displayCount && (
-          <Box textAlign="center" marginBottom="1rem">
-            <Button onClick={handleSeeMore} bg={"purple.600"}>
-              See More
-            </Button>
-          </Box>
+  return (
+    <div
+      key={repo.id}
+      className={isDisabled ? styles.disabledEvent : styles.event}
+    >{isBroadcasted && (
+        <Tabs variant='soft-rounded' colorScheme='green'>
+          <TabList className={styles.tabs}>
+            <Tab>Overview</Tab>
+            <Tab>Branches</Tab>
+            <Tab>Commits</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+            </TabPanel>
+            <TabPanel>
+            <Menu>
+  <MenuButton as={Button} bg={"purple.600"} size={{ base: 'xs', md: 'md' }}>
+    Branch
+  </MenuButton>
+  <MenuList bg="#242424" borderColor="#8affd4">
+    <MenuItem bg="#242424" color="#8affd4" onClick={handleBranchChoice} value="Branch 1">Branch 1</MenuItem>
+    <MenuItem bg="#242424" color="#8affd4" onClick={handleBranchChoice} value="Branch 2">Branch 2</MenuItem>
+    <MenuItem bg="#242424" color="#8affd4"onClick={handleBranchChoice} >Branch 3</MenuItem>
+  </MenuList>
+</Menu>
+              <p>{branchInfo}</p>
+            </TabPanel>
+            <TabPanel>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>)}
+      <div className={styles.eventType}>{repo.name}</div>
+      {isBroadcasted && <h2>Broadcasted</h2>}
+      <div className={styles.eventPayload}>{repo.description}</div>
+      <div className={styles.details}>
+        <span className={styles.language}>{repo.language}</span>
+        <span className={styles.stars}>{repo.stargazers_count} stars</span>
+        <span className={styles.updated}>
+          Updated on {new Date(repo.pushed_at).toLocaleDateString()}
+        </span>
+      </div>
+      <div className={styles.buttonContainer}>
+        <Button
+          as="a"
+          href={repo.html_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          bg={"purple.600"}
+        >
+          visit
+        </Button>
+        {!isBroadcasted && (
+          <Button
+            onClick={() => {
+              if (repo) handleBroadcast({ repository: repo });
+            }}
+            bg={isDisabled ? "grey.500" : "purple.600"}
+            disabled={isDisabled}
+            isLoading={isDisabled}
+          >
+            broadcast
+          </Button>
         )}
+      </div>
+      <div>
+        
       </div>
     </div>
   );
 };
 
-export default ActiveRepos;
+export default Repo;
+

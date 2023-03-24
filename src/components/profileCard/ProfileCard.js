@@ -6,7 +6,7 @@ import Image from "next/image"
 import ShowQrButton from '../showQr/showQrButton';
 
  
- function ProfileCard() {
+ function ProfileCard({ onClick }) {
     const { data: session, status } = useSession();
     const user = session?.token?.login
     const [loading, setLoading] = useState(true);
@@ -14,7 +14,7 @@ import ShowQrButton from '../showQr/showQrButton';
     const [username, setUsername] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");
   
-  
+    
     useEffect(() => {
       async function fetchGitHubData() {
         const url = `https://api.github.com/users/${user}`
