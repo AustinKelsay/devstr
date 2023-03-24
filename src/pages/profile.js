@@ -87,8 +87,6 @@ const Profile = () => {
           <div className={styles.gridContainer}>
             {/* --------------------left side of page-------------------- */}
             <div className={styles.center}>
-              <ProfileCard />
-
               {profileCard ? <ProfileCard /> : <NostrCard />}
               <ContributionCalendar />
               <ActiveRepos />
