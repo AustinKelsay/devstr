@@ -7,7 +7,7 @@ import { setRepos } from "../../redux/githubReducer/githubReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useFetchGithubEvents } from "../../hooks/useFetchGithubEvents";
 import useRelayInstance from "../../hooks/useRelayInstance";
-import Repo from "../repo/repo";
+import Repo from "../repo/Repo";
 
 const ActiveRepos = () => {
   const [displayCount, setDisplayCount] = useState(10);
