@@ -10,16 +10,17 @@ import { setUser } from "../redux/userReducer/userReducer";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/profile.module.css";
 import { relayInit } from "nostr-tools";
-
+import NostrCard from "../components/nostrCard/nostrCard";
+import { Switch, FormControl, FormLabel, Text} from '@chakra-ui/react'
 
 const Profile = () => {
   const { data: session, status } = useSession();
-  // const [profileCard, setProfileCard] = useState(true)
+  const [profileCard, setProfileCard] = useState(true)
   const [qr, setQr] = useState('')
 
-  // const handleProfileChange = () => {
-  //   setProfileCard((prev) => !prev);
-  // };
+  const handleProfileChange = () => {
+    setProfileCard((prev) => !prev);
+  };
 
   const user = session?.token?.login;
 
@@ -77,11 +78,20 @@ const Profile = () => {
 
   return (
     <>
-      {status === "authenticated" ? (
+      {status === "authenticated" ? (<div>
+                              <div className={styles.switch}>
+                              <FormControl display='flex' alignItems='center'>
+                                  <FormLabel htmlFor='email-alerts' mb='0'>
+                                 {profileCard ? (<Text color="white">Github</Text>) : (<Text color="purple.600">Nostr</Text>)}
+                                  </FormLabel>
+                                  <Switch colorScheme='purple.600' onChange={handleProfileChange}/>
+                                </FormControl>
+                                </div>
         <div className={styles.gridContainer}>
           {/* --------------------left side of page-------------------- */}
           <div className={styles.center}>
-            <ProfileCard /> 
+
+            {profileCard ? (<ProfileCard />) : (<NostrCard />)}
             <ContributionCalendar />
             <ActiveRepos />
             {/* <NostrCard /> */}
@@ -94,6 +104,7 @@ const Profile = () => {
             <Recent />
             <LanguagesUsed />
           </div>
+        </div>
         </div>
       ) : (
         <div className={styles.error}>

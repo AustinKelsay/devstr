@@ -1,6 +1,6 @@
 .gridContainer {
-  display: flex;
-  flex-wrap: wrap;
+  /* display: flex;
+  flex-wrap: wrap; */
   display: grid;
   grid-template-columns: 10% 50% 30%;
   grid-gap: 5rem;
@@ -23,6 +23,11 @@
 }
 .qrButton {
   display: none;
+}
+.switch{
+background-color: #181414;
+padding-left: 20px;
+padding-top: 5px;
 }
 
 @media screen and (max-width: 1300px) {
@@ -48,4 +53,5 @@
   .qr {
     display: none;
   }
+  
 }
