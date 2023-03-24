@@ -155,9 +155,7 @@ const Repo = ({ repo, isBroadcasted }) => {
             <Tab>Commits</Tab>
           </TabList>
           <TabPanels>
-            <TabPanel>
-              <p>{repoBranches}</p>
-            </TabPanel>
+            <TabPanel></TabPanel>
             <TabPanel>
               <Menu>
                 <MenuButton
