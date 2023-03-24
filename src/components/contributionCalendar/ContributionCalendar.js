@@ -215,18 +215,40 @@ const ContributionCalendar = () => {
     fetchData();
   }, [repos]);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return date.toLocaleDateString(undefined, options);
+  };
+
   const handleMouseOver = (event, value) => {
     const tooltip = tooltipRef.current;
     const cell = event.target;
     const cellRect = cell.getBoundingClientRect();
-    const x = cellRect.left + cellRect.width / 2 - tooltip.offsetWidth / 2;
-    const y = cellRect.top - tooltip.offsetHeight - 10;
+    const x =
+      cellRect.left +
+      window.scrollX +
+      cellRect.width / 2 -
+      tooltip.offsetWidth / 2;
+    const y = cellRect.top + window.scrollY - tooltip.offsetHeight - 10;
     tooltip.style.display = "block";
+    tooltip.style.opacity = "0";
+    tooltip.style.transform = "translateY(10px)";
     tooltip.style.top = `${y}px`;
     tooltip.style.left = `${x}px`;
-    tooltip.innerHTML = `${value.date}: ${value.count} contribution${
-      value.count !== 1 ? "s" : ""
-    }`;
+    tooltip.innerHTML = `${formatDate(value.date)}: ${
+      value.count
+    } contribution${value.count !== 1 ? "s" : ""}`;
+
+    setTimeout(() => {
+      tooltip.style.opacity = "1";
+      tooltip.style.transform = "translateY(0)";
+    }, 100);
   };
 
   const handleMouseLeave = () => {

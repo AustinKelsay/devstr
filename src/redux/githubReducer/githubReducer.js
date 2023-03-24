@@ -24,24 +24,9 @@ export const githubSlice = createSlice({
       console.log("setRepoEvents", action.payload);
       state.repoEvents = action.payload;
     },
-    setBroadcastableCommits: (state, action) => {
-      state.broadcastableCommits = action.payload;
-    },
-    repoBroadcasted: (state, action) => {
-      const repo = action.payload;
-      console.log("repoBroadcasted", repo.id);
-      const repoIndex = state.repos.findIndex((r) => r.id === repo.id);
-      console.log("repoIndex", state.repos);
-      if (repoIndex >= 0) {
-        state.repos[repoIndex].broadcasted = true;
-      } else {
-        throw new Error("Repo not found in store, refresh the page to fix");
-      }
-    },
   },
 });
 
-export const { setRepos, setBroadcastableCommits, repoBroadcasted } =
-  githubSlice.actions;
+export const { setRepos, setRepoEvents } = githubSlice.actions;
 
 export default githubSlice.reducer;

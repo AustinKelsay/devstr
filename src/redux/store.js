@@ -1,8 +1,10 @@
+// store.js
 import { configureStore } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
 import userReducer from "./userReducer/userReducer";
 import nostrReducer from "./nostrReducer/nostrReducer";
 import githubReducer from "./githubReducer/githubReducer";
+import websocketMiddleware from "./middleware/websocketMiddleware";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +12,6 @@ export const store = configureStore({
     nostr: nostrReducer,
     github: githubReducer,
   },
-  middleware: [thunk],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(websocketMiddleware, thunk),
 });

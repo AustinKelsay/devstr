@@ -9,61 +9,51 @@ import { useSession } from "next-auth/react";
 import { setUser } from "../redux/userReducer/userReducer";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/profile.module.css";
-import { relayInit } from "nostr-tools";
-
+import { relayInit, SimplePool } from "nostr-tools";
 
 const Profile = () => {
   const { data: session, status } = useSession();
   // const [profileCard, setProfileCard] = useState(true)
-  const [qr, setQr] = useState('')
+  const [qr, setQr] = useState("");
 
   // const handleProfileChange = () => {
   //   setProfileCard((prev) => !prev);
   // };
 
-  const user = session?.token?.login;
-
-  const nostrUser = useSelector((state) => state.users.user);
+  const relays = useSelector((state) => state.nostr.relays);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchKind0 = async () => {
-      const relay = relayInit("wss://relay.damus.io");
-      relay.on("connect", () => {
-        console.log(`connected to ${relay.url}`);
-      });
-      relay.on("error", () => {
-        console.log(`failed to connect to ${relay.url}`);
-      });
-
-      await relay.connect();
-
       const pubkey = await window.nostr.getPublicKey();
 
-      let sub = relay.sub([
+      const pool = new SimplePool();
+
+      // Subscriptions not working with kinds and authors?
+      let sub = pool.sub(relays, [
         {
-          kinds: [0],
+          // kinds: [0],
           authors: [pubkey],
         },
       ]);
 
-      console.log("sub", sub);
-
       sub.on("event", (event) => {
-        console.log("we got the event we wanted:", event);
-
-        const profile = JSON.parse(event.content);
-        const parsedProfile = {
-          about: profile.about,
-          displayName: profile.display_name,
-          name: profile.name,
-          nip05: profile.nip05,
-          picture: profile.picture,
-          lnAddress: profile.lud16
+        // Parse out the first kind 0 event and set it as the user
+        if (event.kind !== 0) {
+          return;
         }
-        setQr(parsedProfile.lnAddress)
-        dispatch(setUser(profile));
+
+        console.log("event made it", event);
+
+        if (!event.content) {
+          dispatch(setUser(event));
+        } else {
+          const parsedContent = JSON.parse(event.content);
+          event.content = parsedContent;
+          setQr(event.content.lud16);
+          dispatch(setUser(event));
+        }
       });
 
       // For when there are no more events from subscription
@@ -72,6 +62,7 @@ const Profile = () => {
         sub.unsub();
       });
     };
+
     fetchKind0();
   }, []);
 
@@ -81,7 +72,7 @@ const Profile = () => {
         <div className={styles.gridContainer}>
           {/* --------------------left side of page-------------------- */}
           <div className={styles.center}>
-            <ProfileCard /> 
+            <ProfileCard />
             <ContributionCalendar />
             <ActiveRepos />
             {/* <NostrCard /> */}
