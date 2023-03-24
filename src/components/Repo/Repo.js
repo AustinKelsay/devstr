@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { Button } from "@chakra-ui/react";
+import { Button, Badge } from "@chakra-ui/react";
 import { getEventHash, relayInit } from "nostr-tools";
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react'
 import styles from "../repos/repos.module.css";
+import Commits from "./Commits";
+import Branches from "./Branches";
 
 const Repo = ({ repo, isBroadcasted }) => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [branchInfo, setBranchInfo] = useState('');
+  const [commitInfo, setCommitInfo] = useState('');
 
   const handleBroadcast = async ({ repository }) => {
     setIsDisabled(true);
@@ -104,7 +107,7 @@ const Repo = ({ repo, isBroadcasted }) => {
 
   function handleBranchChoice(e){
     if(e.target.value === "Branch 1"){
-        setBranchInfo("This worked")
+        setBranchInfo(<Branches/>)
     }
     else if(e.target.value === "Branch 2"){
         setBranchInfo("This also worked")
@@ -113,13 +116,24 @@ const Repo = ({ repo, isBroadcasted }) => {
     }
 }
 
+function handleCommitsChoice(e){
+  if(e.target.value === "Commit 1"){
+      setCommitInfo(<Commits/>)
+  }
+  else if(e.target.value === "Branch 2"){
+      setCommitInfo("This also worked")
+  }
+  else{setCommitInfo("This also also worked")
+  }
+}
+
   return (
     <div
       key={repo.id}
       className={isDisabled ? styles.disabledEvent : styles.event}
     >{isBroadcasted && (
         <Tabs variant='soft-rounded' colorScheme='green'>
-          <TabList className={styles.tabs}>
+          <TabList className={styles.tabs} >
             <Tab>Overview</Tab>
             <Tab>Branches</Tab>
             <Tab>Commits</Tab>
@@ -141,11 +155,21 @@ const Repo = ({ repo, isBroadcasted }) => {
               <p>{branchInfo}</p>
             </TabPanel>
             <TabPanel>
+            <Menu>
+  <MenuButton as={Button} bg={"purple.600"} size={{ base: 'xs', md: 'md' }}>
+    Branch
+  </MenuButton>
+  <MenuList bg="#242424" borderColor="#8affd4">
+    <MenuItem bg="#242424" color="#8affd4" onClick={handleCommitsChoice} value="Commit 1">Commit 1</MenuItem>
+    <MenuItem bg="#242424" color="#8affd4" onClick={handleCommitsChoice} value="Branch 2">Commit 2</MenuItem>
+    <MenuItem bg="#242424" color="#8affd4"onClick={handleCommitsChoice} >Commit 3</MenuItem>
+  </MenuList>
+</Menu>
+              <p>{commitInfo}</p>
             </TabPanel>
           </TabPanels>
         </Tabs>)}
-      <div className={styles.eventType}>{repo.name}</div>
-      {isBroadcasted && <h2>Broadcasted</h2>}
+      <div className={styles.eventType}>{repo.name} </div>{isBroadcasted && <Badge variant='outline' colorScheme='purple'>Broadcasted</Badge>}
       <div className={styles.eventPayload}>{repo.description}</div>
       <div className={styles.details}>
         <span className={styles.language}>{repo.language}</span>
@@ -161,6 +185,7 @@ const Repo = ({ repo, isBroadcasted }) => {
           target="_blank"
           rel="noopener noreferrer"
           bg={"purple.600"}
+          size={{ base: 'xs', md: 'md' }}
         >
           visit
         </Button>
@@ -169,6 +194,7 @@ const Repo = ({ repo, isBroadcasted }) => {
             onClick={() => {
               if (repo) handleBroadcast({ repository: repo });
             }}
+            size={{ base: 'xs', md: 'md' }}
             bg={isDisabled ? "grey.500" : "purple.600"}
             disabled={isDisabled}
             isLoading={isDisabled}
