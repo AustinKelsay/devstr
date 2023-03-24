@@ -125,9 +125,10 @@ const ChatList = () => {
                 className={styles.event}
                 key={event.id}
                 my={2}
-                bg="gray.50"
                 boxShadow="dark-lg"
                 maxW="md"
+                backgroundColor="#242424"
+                color="#8affd4;"
               >
                 <CardHeader>
                   <Flex spacing="4">
@@ -158,20 +159,6 @@ const ChatList = () => {
                 </CardBody>
               </Card>
             </div>
-            // <div className={styles.event} key={event.id}>
-            //   <span className={styles.createdAt}>{formatTimestamp(event.created_at)}</span>
-            //   <div className={styles.eventContent}>
-            //   <Avatar size="2xl" src={avatarUrls[event.repoOwner]} margin-bottom="2"/>
-            //       <div className={styles.eventPayload}>
-            //       <p>Repo Name: {event.repoName}</p>
-            //       <p>Repo Owner: <Link href={event.repoOwner} className={styles.link}>{event.repoOwner}</Link></p>
-            //       <p>URL: <Link href={event.repoUrl} className={styles.link}>{event.repoUrl}</Link></p>
-            //       <p>Event ID: {event.id}</p>
-            //       <p>Pubkey: {event.pubkey}</p>
-            //       {/* <p>Tags: {event.tag}</p> */}
-            //     </div>
-            //   </div>
-            // </div>
           ))}
         </div>
       )}

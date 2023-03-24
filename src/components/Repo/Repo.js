@@ -1,12 +1,27 @@
 import React, { useState } from "react";
-import { Button } from "@chakra-ui/react";
+import { Button, Badge } from "@chakra-ui/react";
 import { getEventHash, relayInit } from "nostr-tools";
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Menu, MenuButton, MenuList, MenuItem} from '@chakra-ui/react'
 import styles from "../repos/repos.module.css";
+import Commits from "./Commits";
+import Branches from "./Branches";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react'
 
 const Repo = ({ repo, isBroadcasted }) => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [branchInfo, setBranchInfo] = useState('');
+  const [repoBranches, setRepoBranches] = useState('');
+
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const handleBroadcast = async ({ repository }) => {
     setIsDisabled(true);
@@ -102,16 +117,20 @@ const Repo = ({ repo, isBroadcasted }) => {
 
   };
 
-  function handleBranchChoice(e){
-    if(e.target.value === "Branch 1"){
-        setBranchInfo("This worked")
+  function handleBranchChoice(){
+    // if(e.target.value === "Main"){
+      setBranchInfo(<Commits/>)
+        onOpen()
+
     }
-    else if(e.target.value === "Branch 2"){
-        setBranchInfo("This also worked")
-    }
-    else{setBranchInfo("This also also worked")
-    }
-}
+
+//     else if(e.target.value === "Branch 2"){
+//         setBranchInfo("This also worked")
+//     }
+//     else{setBranchInfo("This also also worked")
+//     }
+// }
+
 
   return (
     <div
@@ -119,13 +138,13 @@ const Repo = ({ repo, isBroadcasted }) => {
       className={isDisabled ? styles.disabledEvent : styles.event}
     >{isBroadcasted && (
         <Tabs variant='soft-rounded' colorScheme='green'>
-          <TabList className={styles.tabs}>
-            <Tab>Overview</Tab>
+          <TabList className={styles.tabs} >
             <Tab>Branches</Tab>
             <Tab>Commits</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>
+              <p>{repoBranches}</p>
             </TabPanel>
             <TabPanel>
             <Menu>
@@ -133,19 +152,25 @@ const Repo = ({ repo, isBroadcasted }) => {
     Branch
   </MenuButton>
   <MenuList bg="#242424" borderColor="#8affd4">
-    <MenuItem bg="#242424" color="#8affd4" onClick={handleBranchChoice} value="Branch 1">Branch 1</MenuItem>
-    <MenuItem bg="#242424" color="#8affd4" onClick={handleBranchChoice} value="Branch 2">Branch 2</MenuItem>
-    <MenuItem bg="#242424" color="#8affd4"onClick={handleBranchChoice} >Branch 3</MenuItem>
+    <MenuItem bg="#242424" color="#8affd4" onClick={handleBranchChoice} value="Main">Main</MenuItem>
+    <MenuItem bg="#242424" color="#8affd4" onClick={handleBranchChoice} value="Branch 2">branch 2</MenuItem>
+    <MenuItem bg="#242424" color="#8affd4"onClick={handleBranchChoice} value="Branch 3">branch 3</MenuItem>
   </MenuList>
 </Menu>
-              <p>{branchInfo}</p>
-            </TabPanel>
-            <TabPanel>
+<Modal onClose={onClose} isOpen={isOpen} size="full">
+        <ModalOverlay />
+        <ModalContent bg="#242424">
+          <ModalHeader textAlign="center" color="white"></ModalHeader>
+          <ModalCloseButton bg="white"/>
+          <ModalBody>
+{branchInfo}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
             </TabPanel>
           </TabPanels>
         </Tabs>)}
-      <div className={styles.eventType}>{repo.name}</div>
-      {isBroadcasted && <h2>Broadcasted</h2>}
+      <div className={styles.eventType}>{repo.name} </div>{isBroadcasted && <Badge variant='outline' colorScheme='purple'>Broadcasted</Badge>}
       <div className={styles.eventPayload}>{repo.description}</div>
       <div className={styles.details}>
         <span className={styles.language}>{repo.language}</span>
@@ -161,6 +186,7 @@ const Repo = ({ repo, isBroadcasted }) => {
           target="_blank"
           rel="noopener noreferrer"
           bg={"purple.600"}
+          size={{ base: 'xs', md: 'md' }}
         >
           visit
         </Button>
@@ -169,6 +195,7 @@ const Repo = ({ repo, isBroadcasted }) => {
             onClick={() => {
               if (repo) handleBroadcast({ repository: repo });
             }}
+            size={{ base: 'xs', md: 'md' }}
             bg={isDisabled ? "grey.500" : "purple.600"}
             disabled={isDisabled}
             isLoading={isDisabled}
