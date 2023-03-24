@@ -120,10 +120,9 @@ const ChatList = () => {
       ) : (
         <div className={styles.currentEvents}>
           {repoEvents.map((event) => (
-            <div>
+            <div key={event.id}>
               <Card
                 className={styles.event}
-                key={event.id}
                 my={2}
                 boxShadow="dark-lg"
                 maxW="md"
