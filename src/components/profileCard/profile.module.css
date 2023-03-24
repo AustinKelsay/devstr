@@ -33,7 +33,7 @@
       margin: 20px;
       display: flex;
       flex-direction: row;
-      padding: 5px;
+      padding: 10px 5px 10px 5px;
       background-color: #242424;
       color: white;
       border-radius: 30px;
@@ -43,6 +43,9 @@
     .name {
       font-size: large;
       font-weight: bold;
+    }
+    .cardText {
+      margin-left: 40px;
     }
 
   }

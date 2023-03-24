@@ -141,61 +141,13 @@ const ActiveRepos = () => {
     setDisplayCount(displayCount + 10);
   };
 
-  return loading || !repoList.length ? (
+return loading || !repoList.length ? (
     <Spinner color="gray.50" />
   ) : (
     <div className={styles.container}>
       <h1 className={styles.header}>Active Repositories</h1>
       <div className={styles.eventList}>
         {repoList.length &&
-          repoList.slice(0, displayCount).map((repo) => (
-            <div
-              key={repo.id}
-              className={isDisabled ? styles.disabledEvent : styles.event}
-            >
-              {console.log('yo', repo)}
-              {repo?.broadcasted && (
-                <Tabs variant='enclosed'>
-                <TabList>
-                  <Tab>One</Tab>
-                  <Tab>Two</Tab>
-
-                </TabList>
-                <TabPanels>
-                  <TabPanel>
-                    <p>Branches</p>
-                    {}
-                  </TabPanel>
-                  <TabPanel>
-                    <p>Commits</p>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-              )}
-              <div className={styles.eventType}>{repo.name}</div>
-              {repo?.broadcasted && <h2>Broadcasted</h2>}
-              <div className={styles.eventPayload}>{repo.description}</div>
-              <div className={styles.details}>
-                <span className={styles.language}>{repo.language}</span>
-                <span className={styles.stars}>
-                  {repo.stargazers_count} stars
-                </span>
-                <span className={styles.updated}>
-                  Updated on {new Date(repo.pushed_at).toLocaleDateString()}
-                </span>
-              </div>
-              <div className={styles.buttonContainer}>
-                <Button
-                  as="a"
-                  href={repo.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  bg={"purple.600"}
-                >
-                  visit
-                </Button>
-                {!repo?.broadcasted && (
-
           repoList.slice(0, displayCount).map((repo) => {
             const isBroadcasted = events.some(
               (event) => event.repo.name === repo.name
@@ -224,6 +176,7 @@ const ActiveRepos = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     bg={"purple.600"}
+                    size={{ base: 'xs', md: 'md'}}
                   >
                     visit
                   </Button>
@@ -232,6 +185,7 @@ const ActiveRepos = () => {
                       onClick={() => {
                         if (repo) handleBroadcast({ repository: repo });
                       }}
+                      size={{ base: 'xs', md: 'md'}}
                       bg={isDisabled ? "grey.500" : "purple.600"}
                       disabled={isDisabled}
                       isLoading={isDisabled}

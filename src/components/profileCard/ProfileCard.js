@@ -33,7 +33,9 @@ import ShowQrButton from '../showQr/showQrButton';
     return loading ? (<Spinner color='gray.50' />):
         (<div class={styles.profileCard}>
 
-          <Avatar size="2xl" src={avatarUrl}/>
+          <Avatar
+            size={{ base: 'xl', md: '2xl' }}
+          src={avatarUrl}/>
           <div className={styles.cardText}>
             <h2 className={styles.name}>{username}</h2>
             <p className={styles.bio}>{bio}</p>
