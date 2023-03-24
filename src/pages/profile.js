@@ -10,15 +10,17 @@ import { setUser } from "../redux/userReducer/userReducer";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/profile.module.css";
 import { relayInit, SimplePool } from "nostr-tools";
+import NostrCard from "../components/nostrCard/nostrCard";
+import { Switch, FormControl, FormLabel, Text } from "@chakra-ui/react";
 
 const Profile = () => {
   const { data: session, status } = useSession();
-  // const [profileCard, setProfileCard] = useState(true)
+  const [profileCard, setProfileCard] = useState(true);
   const [qr, setQr] = useState("");
 
-  // const handleProfileChange = () => {
-  //   setProfileCard((prev) => !prev);
-  // };
+  const handleProfileChange = () => {
+    setProfileCard((prev) => !prev);
+  };
 
   const relays = useSelector((state) => state.nostr.relays);
 
@@ -69,21 +71,37 @@ const Profile = () => {
   return (
     <>
       {status === "authenticated" ? (
-        <div className={styles.gridContainer}>
-          {/* --------------------left side of page-------------------- */}
-          <div className={styles.center}>
-            <ProfileCard />
-            <ContributionCalendar />
-            <ActiveRepos />
-            {/* <NostrCard /> */}
+        <div>
+          <div className={styles.switch}>
+            <FormControl display="flex" alignItems="center">
+              <FormLabel htmlFor="email-alerts" mb="0">
+                {profileCard ? (
+                  <Text color="white">Github</Text>
+                ) : (
+                  <Text color="purple.600">Nostr</Text>
+                )}
+              </FormLabel>
+              <Switch colorScheme="purple.600" onChange={handleProfileChange} />
+            </FormControl>
           </div>
-          {/* --------------------right side of page-------------------- */}
-          <div className={styles.right}>
-            <div className={styles.qr}>
-              <QR value={qr} />
+          <div className={styles.gridContainer}>
+            {/* --------------------left side of page-------------------- */}
+            <div className={styles.center}>
+              <ProfileCard />
+
+              {profileCard ? <ProfileCard /> : <NostrCard />}
+              <ContributionCalendar />
+              <ActiveRepos />
+              {/* <NostrCard /> */}
             </div>
-            <Recent />
-            <LanguagesUsed />
+            {/* --------------------right side of page-------------------- */}
+            <div className={styles.right}>
+              <div className={styles.qr}>
+                <QR value={qr} />
+              </div>
+              <Recent />
+              <LanguagesUsed />
+            </div>
           </div>
         </div>
       ) : (

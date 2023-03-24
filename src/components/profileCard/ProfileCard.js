@@ -2,10 +2,11 @@ import { Spinner, Avatar } from '@chakra-ui/react'
 import { useState, useEffect } from "react";
 import styles from "./profile.module.css"
 import { useSession } from "next-auth/react";
+import Image from "next/image"
 import ShowQrButton from '../showQr/showQrButton';
 
  
- function ProfileCard() {
+ function ProfileCard({ onClick }) {
     const { data: session, status } = useSession();
     const user = session?.token?.login
     const [loading, setLoading] = useState(true);
@@ -13,7 +14,7 @@ import ShowQrButton from '../showQr/showQrButton';
     const [username, setUsername] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");
   
-  
+    
     useEffect(() => {
       async function fetchGitHubData() {
         const url = `https://api.github.com/users/${user}`
@@ -31,7 +32,10 @@ import ShowQrButton from '../showQr/showQrButton';
 
     return loading ? (<Spinner color='gray.50' />):
         (<div class={styles.profileCard}>
-        <Avatar size="2xl" src={avatarUrl} />
+
+          <Avatar
+            size={{ base: 'xl', md: '2xl' }}
+          src={avatarUrl}/>
           <div className={styles.cardText}>
             <h2 className={styles.name}>{username}</h2>
             <p className={styles.bio}>{bio}</p>

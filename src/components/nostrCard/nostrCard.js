@@ -4,7 +4,8 @@ import { useSession } from "next-auth/react";
 import { setUser } from "../../redux/userReducer/userReducer";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../profileCard/profile.module.css"
-import { relayInit } from "nostr-tools";
+import { nip05, relayInit } from "nostr-tools";
+import ShowQrButton from '../showQr/showQrButton';
 
 
 const NostrCard = () =>{
@@ -13,6 +14,8 @@ const NostrCard = () =>{
     const [bio, setBio] = useState("");
     const [username, setUsername] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");
+    const [nip05, setNip05] = useState('')
+    const [qr, setQr] = useState('')
 
     const nostrUser = useSelector((state) => state.users.user);
   
@@ -53,9 +56,11 @@ const NostrCard = () =>{
             nip05: profile.nip05,
             picture: profile.picture
           }
+          setNip05(parsedProfile.nip05)
           setUsername(parsedProfile.displayName);
           setBio(parsedProfile.about);
           setAvatarUrl(parsedProfile.picture);
+          setRequestMeta(parsedProfile.lud16)
           dispatch(setUser(profile));
         });
   
@@ -71,14 +76,20 @@ const NostrCard = () =>{
 
 
     return(<div class={styles.profileCard}>
-        <Avatar size="2xl" src={avatarUrl} />
+        <Avatar  src={avatarUrl} 
+        size={{ base: 'xl', md: '2xl' }}/>
           <div className={styles.cardText}>
             <h2 className={styles.name}>{username}</h2>
-            <p className={styles.bio}>{bio}</p>
-            <div className={styles.more}></div>
+            <p className={styles.bio}>{bio}
+            <br/>{nip05}</p>
+            
+            <div className={styles.more}>   
+            <ShowQrButton/>
+              </div>
+            </div>
           </div>
-        </div>
     )
 }
 
 export default NostrCard;
+

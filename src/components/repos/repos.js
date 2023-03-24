@@ -3,10 +3,7 @@ import { Button, Box } from "@chakra-ui/react";
 import styles from "./repos.module.css";
 import { useSession } from "next-auth/react";
 import { Spinner } from "@chakra-ui/react";
-import {
-  setRepos,
-  repoBroadcasted,
-} from "../../redux/githubReducer/githubReducer";
+import { setRepos } from "../../redux/githubReducer/githubReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useFetchGithubEvents } from "../../hooks/useFetchGithubEvents";
 import useRelayInstance from "../../hooks/useRelayInstance";

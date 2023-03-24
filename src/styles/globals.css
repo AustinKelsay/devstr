@@ -184,3 +184,14 @@ a {
 .cellFadeIn {
   animation: fadeIn 1s ease-in-out;
 }
+
+@media screen and (max-width: 680px) {
+.contributionChart {
+  margin: 20px;
+  padding: 10px;
+  background-color: #242424;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+  color: #41ab5d;
+}
+}

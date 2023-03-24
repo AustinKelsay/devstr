@@ -20,7 +20,7 @@ const ShowQrButton = () => {
   // const [profileCard, setProfileCard] = useState(true)
   const [qr, setQr] = useState("");
 
-  const toggleQrDisplay = () => {
+  const toggleQrDisplay = (e) => {
     setIsVisible((prev) => !prev);
   };
   const { isOpen, onOpen, onClose } = useDisclosure(toggleQrDisplay);
