@@ -1,45 +1,55 @@
-import { Card, CardHeader, CardBody, Box, Text, Stack, Heading, StackDivider } from '@chakra-ui/react'
+import React, { useState } from "react";
+import { Button } from '@chakra-ui/react'
+import styles from "../Repo/repos.module.css";
 
 
-const Commits = () => {
-    return(
-<>
-<Card bg="#242424" color="#8affd4" boxShadow='dark-lg' p='6' rounded='md'>
-  <CardHeader>
-    <Heading size='md'>Commits</Heading>
-  </CardHeader>
 
-  <CardBody>
-    <Stack divider={<StackDivider />} spacing='4'>
-      <Box>
-        <Heading size='xs' textTransform='uppercase'>
-          Summary
-        </Heading>
-        <Text pt='2' fontSize='sm'>
-          View a summary of all your clients over the last month.
-        </Text>
-      </Box>
-      <Box>
-        <Heading size='xs' textTransform='uppercase'>
-          Overview
-        </Heading>
-        <Text pt='2' fontSize='sm'>
-          Check out the overview of your clients.
-        </Text>
-      </Box>
-      <Box>
-        <Heading size='xs' textTransform='uppercase'>
-          Analysis
-        </Heading>
-        <Text pt='2' fontSize='sm'>
-          See a detailed analysis of all your business clients.
-        </Text>
-      </Box>
-    </Stack>
-  </CardBody>
-</Card>
-</>
-    )
+const Commits = ({ repo, isBroadcasted }) => {
+  const [isDisabled, setIsDisabled] = useState(false);
+
+
+
+  return (
+    <>
+        <h1 className={styles.header}>Commit History</h1>
+        <div className={isDisabled ? styles.disabledEvent : styles.event}>
+            <div className={styles.eventType}>Commit</div>{isBroadcasted && <Badge variant='outline' colorScheme='purple'>Broadcasted</Badge>}
+            <div className={styles.eventPayload}>Added a new button to test if this works</div>
+            <div className={styles.details}>
+              <span className={styles.updated}>
+                Updated on March 23, 2023, 12:20AM
+              </span>
+            </div>
+            <div className={styles.buttonContainer}>
+              <Button
+                as="a"
+                href="?"
+                target="_blank"
+                rel="noopener noreferrer"
+                bg={"purple.600"}
+                size={{ base: 'xs', md: 'md' }}
+              >
+                visit
+              </Button>
+              {!isBroadcasted && (
+                <Button
+                  onClick={() => {
+                    if (repo) handleBroadcast({ repository: repo });
+                  }}
+                  size={{ base: 'xs', md: 'md' }}
+                  bg={isDisabled ? "grey.500" : "purple.600"}
+                  disabled={isDisabled}
+                  isLoading={isDisabled}
+                >
+                  broadcast
+                </Button>
+              )}
+            </div>
+            <div>
+            </div>
+          </div>
+    </>
+  )
 }
 
 export default Commits;

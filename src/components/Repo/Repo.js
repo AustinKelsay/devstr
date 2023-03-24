@@ -5,11 +5,23 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel, Menu, MenuButton, MenuList, Me
 import styles from "../repos/repos.module.css";
 import Commits from "./Commits";
 import Branches from "./Branches";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react'
 
 const Repo = ({ repo, isBroadcasted }) => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [branchInfo, setBranchInfo] = useState('');
-  const [commitInfo, setCommitInfo] = useState('');
+  const [repoBranches, setRepoBranches] = useState('');
+
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const handleBroadcast = async ({ repository }) => {
     setIsDisabled(true);
@@ -105,27 +117,20 @@ const Repo = ({ repo, isBroadcasted }) => {
 
   };
 
-  function handleBranchChoice(e){
-    if(e.target.value === "Branch 1"){
-        setBranchInfo(<Branches/>)
-    }
-    else if(e.target.value === "Branch 2"){
-        setBranchInfo("This also worked")
-    }
-    else{setBranchInfo("This also also worked")
-    }
-}
+  function handleBranchChoice(){
+    // if(e.target.value === "Main"){
+      setBranchInfo(<Commits/>)
+        onOpen()
 
-function handleCommitsChoice(e){
-  if(e.target.value === "Commit 1"){
-      setCommitInfo(<Commits/>)
-  }
-  else if(e.target.value === "Branch 2"){
-      setCommitInfo("This also worked")
-  }
-  else{setCommitInfo("This also also worked")
-  }
-}
+    }
+
+//     else if(e.target.value === "Branch 2"){
+//         setBranchInfo("This also worked")
+//     }
+//     else{setBranchInfo("This also also worked")
+//     }
+// }
+
 
   return (
     <div
@@ -134,12 +139,12 @@ function handleCommitsChoice(e){
     >{isBroadcasted && (
         <Tabs variant='soft-rounded' colorScheme='green'>
           <TabList className={styles.tabs} >
-            <Tab>Overview</Tab>
             <Tab>Branches</Tab>
             <Tab>Commits</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>
+              <p>{repoBranches}</p>
             </TabPanel>
             <TabPanel>
             <Menu>
@@ -147,25 +152,21 @@ function handleCommitsChoice(e){
     Branch
   </MenuButton>
   <MenuList bg="#242424" borderColor="#8affd4">
-    <MenuItem bg="#242424" color="#8affd4" onClick={handleBranchChoice} value="Branch 1">Branch 1</MenuItem>
-    <MenuItem bg="#242424" color="#8affd4" onClick={handleBranchChoice} value="Branch 2">Branch 2</MenuItem>
-    <MenuItem bg="#242424" color="#8affd4"onClick={handleBranchChoice} >Branch 3</MenuItem>
+    <MenuItem bg="#242424" color="#8affd4" onClick={handleBranchChoice} value="Main">Main</MenuItem>
+    <MenuItem bg="#242424" color="#8affd4" onClick={handleBranchChoice} value="Branch 2">branch 2</MenuItem>
+    <MenuItem bg="#242424" color="#8affd4"onClick={handleBranchChoice} value="Branch 3">branch 3</MenuItem>
   </MenuList>
 </Menu>
-              <p>{branchInfo}</p>
-            </TabPanel>
-            <TabPanel>
-            <Menu>
-  <MenuButton as={Button} bg={"purple.600"} size={{ base: 'xs', md: 'md' }}>
-    Branch
-  </MenuButton>
-  <MenuList bg="#242424" borderColor="#8affd4">
-    <MenuItem bg="#242424" color="#8affd4" onClick={handleCommitsChoice} value="Commit 1">Commit 1</MenuItem>
-    <MenuItem bg="#242424" color="#8affd4" onClick={handleCommitsChoice} value="Branch 2">Commit 2</MenuItem>
-    <MenuItem bg="#242424" color="#8affd4"onClick={handleCommitsChoice} >Commit 3</MenuItem>
-  </MenuList>
-</Menu>
-              <p>{commitInfo}</p>
+<Modal onClose={onClose} isOpen={isOpen} size="full">
+        <ModalOverlay />
+        <ModalContent bg="#242424">
+          <ModalHeader textAlign="center" color="white"></ModalHeader>
+          <ModalCloseButton bg="white"/>
+          <ModalBody>
+{branchInfo}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
             </TabPanel>
           </TabPanels>
         </Tabs>)}

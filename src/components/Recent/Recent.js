@@ -34,7 +34,7 @@ const Recent = () => {
 
   const formatTimestamp = (timestamp) => {
     const date = moment.utc(timestamp);
-    return date.format('MMMM Do YYYY, h:mm:ss a');
+    return date.format('MMM Do YYYY, h:mm:ss a');
   };
   
   const split = (str) =>{
