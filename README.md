@@ -1,6 +1,10 @@
 # DEVSTR
 
-## A work in progress Github / Nostr integrated developer platform
+## Github / Nostr integrated developer platform
+
+### demo from SatsX hackathon 2023
+[https://www.youtube.com/watch?v=C1VL-Bj6of0](https://www.youtube.com/watch?v=C1VL-Bj6of0)
+
 
 ### github event kinds
 
